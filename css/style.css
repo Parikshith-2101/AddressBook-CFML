@@ -1,0 +1,39 @@
+body{
+    background: hsl(208.8deg 47.17% 89.61%);
+    margin: 0;
+    padding: 100px 0 0 0;
+}
+.navbar {
+    background: rgb(51 122 183);
+}
+.nav-item .nav-link , .nav-brand{
+    color: white;
+}
+.container{
+    background: white;
+    border-radius: 20px;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+}
+.left-content{
+    background: hsl(207.73deg 56.41% 45.88%);
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+    padding-inline: 10px;
+}
+.login-title{
+    color : hsl(207.73deg 56.41% 45.88%);
+}
+.flex-grow-1{
+    flex-grow: 2 !important;
+}
+.flex-grow-3{
+    flex-grow: 3;
+}
+.login-btn{
+    color : hsl(207.73deg 56.41% 45.88%);
+    background: white;
+    border: 1px solid hsl(207.73deg 56.41% 45.88%);
+}
+.g-img{
+    margin-bottom: -4px;
+}
