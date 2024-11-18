@@ -9,9 +9,10 @@ body{
 .nav-item .nav-link , .nav-brand{
     color: white;
 }
-.container{
-    background: white;
+.border-radius-20{
     border-radius: 20px;
+}
+.shadow-heavy{
     box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
 }
 .left-content{
@@ -29,6 +30,9 @@ body{
 .flex-grow-3{
     flex-grow: 3;
 }
+.flex-grow{
+    flex-grow: 1;
+}
 .login-btn{
     color : hsl(207.73deg 56.41% 45.88%);
     background: white;
@@ -36,4 +40,77 @@ body{
 }
 .g-img{
     margin-bottom: -4px;
+}
+input:focus{
+    outline: none;
+}
+.green{
+    color : green;
+}
+.red{
+    color : red;
+}
+.w-15{
+    width: 15%;
+}
+.create-btn{
+    background: hsl(207.73deg 56.41% 45.88%);
+    color: white;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 14px;
+    border: 1px solid hsl(207.73deg 56.41% 45.88%);
+}
+.user-fullName{
+    color: hsl(207.73deg 56.41% 45.88%);
+    font-weight: 500;
+    font-size: 20px;
+}
+.userProfile{
+    height: 100%;
+}
+.title{
+    color: hsl(207.73deg 56.41% 45.88%);
+    font-weight: 500;
+    font-size: 16px;
+}
+.profileImgDiv{
+    width: 60px;
+}
+.nameDiv{
+    width: 80px;
+}
+.emailDiv{
+    width: 170px;
+}
+.numberDiv{
+    width: 125px;
+}
+.bg-lightblue{
+    background: hsl(198.62deg 64.44% 91.18%);
+}
+.heading{
+    color: hsl(207.73deg 56.41% 45.88%);
+    font-weight: 700;
+    font-size: 22px;
+    background: hsl(198.62deg 64.44% 91.18%);
+}
+.line-height-2{
+    line-height: 2;
+}
+
+.max-width-475{
+    max-width: 475px;
+}
+.modal{
+    top: 40px !important;
+}
+.me-25{
+    margin-right: 25%;
+}
+@media (min-width: 576px) {
+    .modal-dialog {
+        max-width: unset;
+        margin: 1.75rem auto;
+    }
 }
