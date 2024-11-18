@@ -24,38 +24,48 @@
                 </a>
             </li>
             <li class = "nav-item">
-                <a class = "nav-link" href = "index.cfm">
+                <a class = "nav-link" href="index.cfm">
                     <i class="fa-solid fa-right-to-bracket"></i>
                     <span>Login</span>
                 </a>
             </li>
         </ul>
     </nav>
-    <div class="container my-5 d-flex p-0 w-50 bg-white border-radius-20 shadow-heavy">
+    <div class="container bg-white my-5 d-flex p-0 w-50 border-radius-20 shadow-heavy">
         <div class="left-content d-flex align-items-center flex-grow-1 justify-content-center">
             <img src="assets/designImages/addressbook.png" alt="addressbook">
         </div>
         <div class="right-content flex-grow-3">
             <div class="p-4 align-items-center d-flex flex-column">
-                <div class="text-uppercase text-center login-title fs-2 mb-3">Login</div>
+                <div class="text-uppercase text-center login-title fs-2 mb-3">Sign up</div>
                 <form method = "post" class = "align-items-center d-flex flex-column w-100" enctype="multipart/form-data">
                     <div class="w-100 py-4">
-                        <input type="text" name="userName" class="border-0 border-bottom w-100" placeholder="username">
+                        <input type="text" name="fullName" id="fullName" class="border-0 border-bottom w-100" placeholder="Full Name">
                     </div>
                     <div class="w-100 py-4">
-                        <input type="password" name="password" class="border-0 border-bottom w-100" placeholder="password">
+                        <input type="text" name="email" id="email" class="border-0 border-bottom w-100" placeholder="Email ID">
                     </div>
-                    <input type = "submit" value = "LOGIN" name = "submit" class="rounded-pill login-btn form-control w-75 my-4 btn fw-bold">
-                    <div>Or Sign In Using </div>
-                    <div class="d-flex align-items-center">
-                        <a href="" class="me-1 py-3"><img src="assets/designImages/fb-icon.png" alt="fbIcon" width="50"></a>
-                        <a href="" class="py-3"><img src="assets/designImages/gmail-icon.png" alt="gmailIcon" width="50" class="g-img"></a>
+                    <div class="w-100 py-4">
+                        <input type="text" name="userName" id="userName" class="border-0 border-bottom w-100" placeholder="Username">
                     </div>
+                    <div class="w-100 py-4">
+                        <input type="password" name="password" id="password" class="border-0 border-bottom w-100" placeholder="Password">
+                    </div>
+                    <div class="w-100 py-4">
+                        <input type="password" id="confirmPassword" class="border-0 border-bottom w-100" placeholder="Confirm password">
+                    </div>
+                    <input type="file" name="profileImage" id="profileImage" accept="image/png, image/jpeg">               
+                    <input type = "submit" value = "REGISTER" name = "submit" class="rounded-pill login-btn form-control w-75 my-4 btn fw-bold">
                 </form>
-                <div>Don't have an account? <a href="signup.cfm" class="text-decoration-none">Register Here</a></div>
+                <div>Already have an account? <a href="index.cfm" class="text-decoration-none">Login Here</a></div>
                 <cfif structKeyExists(form, "submit")>
-                    <cfset local.obj = createObject("component", "components.function")>
-                    <cfset local.result = local.obj.login(form.userName,form.password)>
+                    <cfobject name = "obj" component = "components.function">
+                    <cfset local.result = obj.signup(form.fullName,form.email,form.userName,form.password,form.profileImage)>
+                    <cfloop collection = "#local.result#" item = "item">
+                        <cfoutput>
+                            <div class = "#item# mt-3 fw-bold">#local.result[item]#</div>
+                        </cfoutput>
+                    </cfloop>
                 </cfif>
             </div>
         </div>

@@ -1,60 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Address Book</title>
+    <title>Document</title>
     <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
+
 <body>
-    <nav class="navbar fixed-top">
-        <a href="" class="nav-link">
-            <div class="d-flex nav-brand">
-                <img src="assets/addressbook.png" alt="addressbook" width="40">
-                <span class="fs-4">ADDRESS BOOK</span>
-            </div>
-        </a>
-        <ul class = "d-flex list-unstyled my-0">
-            <li class = "nav-item">
-                <a class = "nav-link" href = "signup.cfm">
-                    <i class="fa-solid fa-user-plus"></i>
-                    <span>Sign Up</span>
-                </a>
-            </li>
-            <li class = "nav-item">
-                <a class = "nav-link">
-                    <i class="fa-solid fa-right-to-bracket"></i>
-                    <span>Login</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
-    <div class="container mt-5 d-flex p-0 w-50">
-        <div class="left-content d-flex align-items-center flex-grow-1 justify-content-center">
-            <img src="assets/addressbook.png" alt="addressbook">
-        </div>
-        <div class="right-content flex-grow-3">
-            <div class="p-4 align-items-center d-flex flex-column">
-                <div class="text-uppercase text-center login-title fs-2 mb-3">Login</div>
-                <div class="w-100 py-4">
-                    <input type="text" name="" id="" class="border-0 border-bottom w-100" placeholder="username">
+    <div class="container">
+        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">view</button>
+
+        <div class="modal-Div fade" id="myModal" role="dialog">
+            <div>
+                <div class="modal-content w-50 mx-auto">
+                    <div class="bg-lightblue d-flex px-3">
+                        <div class="contact-details bg-white p-4 flex-grow-1 d-flex flex-column">
+                            <div class="p-5 pb-3">
+                                <div class="heading p-4 text-center">
+                                    CONTACT DETAILS
+                                </div>
+                            </div>
+                            <div class="p-4 d-flex flex-column">
+                                <div class="d-flex">
+                                    <div class="details-div d-flex w-50 title fw-bold">Name<span class="ms-auto me-25">:</span></div>
+                                    <div class="w-50">Miss. Anjana S</div>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="details-div d-flex w-50 title fw-bold">Gender<span class="ms-auto me-25">:</span></div>
+                                    <div class="w-50">Female</div>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="details-div d-flex w-50 title fw-bold">Date of birth<span class="ms-auto me-25">:</span></div>
+                                    <div class="w-50">12/05/2021</div>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="details-div d-flex w-50 title fw-bold">Address<span class="ms-auto me-25">:</span></div>
+                                    <div class="w-50">Thaliyal street , thiruvattar psot , kanyakukari</div>
+                                </div>
+                            </div>
+                            <button class="rounded-pill w-25 mx-auto" data-bs-dismiss="modal">close</button>
+                        </div>
+                        <div class="flex-grow-1 d-flex justify-content-center align-items-center">
+                            <img src="assets/designImages/profile.png" alt="profile" width="100">
+                        </div>
+                    </div>
+                    
                 </div>
-                <div class="w-100 py-4">
-                    <input type="password" name="" id="" class="border-0 border-bottom w-100" placeholder="password">
-                </div>
-                <button class="rounded-pill login-btn form-control w-75 my-4 btn fw-bold">LOGIN</button>
-                <div>
-                    Or Sign In Using  
-                </div>
-                <div class="d-flex align-items-center">
-                    <a href="" class="me-1 py-3"><img src="assets/fb-icon.png" alt="fbIcon" width="50"></a>
-                    <a href="" class="py-3"><img src="assets/gmail-icon.png" alt="gmailIcon" width="50" class="g-img"></a>
-                </div>
-                <div>Don't have an account? <a href="" class="text-decoration-none">Register Here</a></div>
             </div>
         </div>
     </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </body>
+
 </html>
