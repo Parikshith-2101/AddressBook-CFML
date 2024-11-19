@@ -98,7 +98,15 @@ input:focus{
 .line-height-2{
     line-height: 2;
 }
-
+input{
+    line-height: 1;
+}
+select,input{
+    border: none;
+    border-top: 1px solid hsl(0deg 0% 93.33%);
+    border-bottom: 1px solid hsl(0deg 0% 80%);
+    padding: 5px 0;
+}
 .max-width-475{
     max-width: 475px;
 }
@@ -107,6 +115,16 @@ input:focus{
 }
 .me-25{
     margin-right: 25%;
+}
+.subTitle{
+    font-size: 20px;
+    font-weight: 500;
+    color: hsl(207.73deg 56.41% 45.88%);
+    border-bottom: 2px solid hsl(225deg 40.45% 34.9%);
+}
+label.label-title {
+    font-weight: 500;
+    color: hsl(207.73deg 56.41% 45.88%);
 }
 @media (min-width: 576px) {
     .modal-dialog {

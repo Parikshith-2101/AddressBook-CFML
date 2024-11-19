@@ -41,26 +41,31 @@
                 <form method = "post" class = "align-items-center d-flex flex-column w-100" enctype="multipart/form-data">
                     <div class="w-100 py-4">
                         <input type="text" name="fullName" id="fullName" class="border-0 border-bottom w-100" placeholder="Full Name">
+                        <div id="nameError" class="text-danger fw-bold"></div>
                     </div>
                     <div class="w-100 py-4">
                         <input type="text" name="email" id="email" class="border-0 border-bottom w-100" placeholder="Email ID">
+                        <div id="emailError" class="text-danger fw-bold"></div>
                     </div>
                     <div class="w-100 py-4">
                         <input type="text" name="userName" id="userName" class="border-0 border-bottom w-100" placeholder="Username">
+                        <div id="userNameError" class="text-danger fw-bold"></div>
                     </div>
                     <div class="w-100 py-4">
                         <input type="password" name="password" id="password" class="border-0 border-bottom w-100" placeholder="Password">
+                        <div id="passwordError" class="text-danger fw-bold"></div>
                     </div>
                     <div class="w-100 py-4">
                         <input type="password" id="confirmPassword" class="border-0 border-bottom w-100" placeholder="Confirm password">
+                        <div id="confirmpassError" class="text-danger fw-bold"></div>
                     </div>
-                    <input type="file" name="profileImage" id="profileImage" accept="image/png, image/jpeg">               
-                    <input type = "submit" value = "REGISTER" name = "submit" class="rounded-pill login-btn form-control w-75 my-4 btn fw-bold">
+                    <input type="file" name="profileImage" id="profileImage" accept="image/png, image/jpeg">  
+                    <div id="profileError" class="text-danger fw-bold"></div>             
+                    <input type = "submit" value = "REGISTER" name = "submit" onclick = "return signupValidation()" class="rounded-pill login-btn form-control w-75 my-4 btn fw-bold">
                 </form>
                 <div>Already have an account? <a href="index.cfm" class="text-decoration-none">Login Here</a></div>
                 <cfif structKeyExists(form, "submit")>
-                    <cfobject name = "obj" component = "components.function">
-                    <cfset local.result = obj.signup(form.fullName,form.email,form.userName,form.password,form.profileImage)>
+                    <cfset local.result = application.objFunction.signup(form.fullName,form.email,form.userName,form.password,form.profileImage)>
                     <cfloop collection = "#local.result#" item = "item">
                         <cfoutput>
                             <div class = "#item# mt-3 fw-bold">#local.result[item]#</div>
@@ -70,5 +75,6 @@
             </div>
         </div>
     </div>
+    <script src = "js/script.js"></script>
 </body>
 </html>

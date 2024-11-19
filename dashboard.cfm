@@ -38,9 +38,9 @@
             </div>
             <div class="d-flex mt-4">
                 <div class="userProfile d-flex flex-column bg-white p-3 align-items-center rounded">
-                    <img src="assets/userProfileImages/#session.profileImage#" alt="profile" class="rounded-circle" width="80" height="75">
-                    <p class="user-fullName">#session.fullName#</p>
-                    <button class="rounded-pill create-btn btn" data-bs-toggle="modal" data-bs-target="##createModal">Create contact</button>
+                    <img src="assets/userProfileImages/#session.profileImage#" alt="profile" class="rounded-circle" width="80" height="80">
+                    <p class="user-fullName text-uppercase my-3">#session.fullName#</p>
+                    <button class="rounded-pill create-btn btn" data-bs-toggle="modal" data-bs-target="##createModal" onclick="createModal()">Create contact</button>
                 </div>
 
                 <div class="dashboard bg-white ms-3 rounded px-2 flex-grow">
@@ -50,19 +50,22 @@
                         <div class="emailDiv title me-3">EMAIL ID</div>
                         <div class="numberDiv title me-3">PHONE NUMBER</div>
                     </div>
-                    <div class="d-flex border-bottom py-3 align-items-center">
-                        <div class="profileImgDiv me-3">
-                            <img src="assets/designImages/profile.png" alt="profile" width="60">
+                    <cfset local.contactList = application.objFunction.contactList()>
+                    <cfloop query = "#local.contactList#">
+                        <div class="d-flex border-bottom py-3 align-items-center">
+                            <div class="profileImgDiv me-3">
+                                <img src="assets/contactProfileImages/#profilephoto#" alt="profile" width="60">
+                            </div>
+                            <div class="nameDiv me-3">#local.contactList.firstName#</div>
+                            <div class="emailDiv me-3">#local.contactList.email#</div>
+                            <div class="numberDiv me-3">#local.contactList.mobile#</div>
+                            <div class="d-flex justify-content-around flex-grow-1">
+                                <button class="rounded-pill login-btn px-4 btn" data-bs-toggle="modal" data-bs-target="##createModal" onclick="editModal()">EDIT</button>
+                                <button class="rounded-pill login-btn px-4 btn">DELETE</button>
+                                <button class="rounded-pill login-btn px-4 btn" data-bs-toggle="modal" data-bs-target="##viewModal">VIEW</button>
+                            </div>
                         </div>
-                        <div class="nameDiv me-3">Anjana</div>
-                        <div class="emailDiv me-3">anjana@gmail.com</div>
-                        <div class="numberDiv me-3">12345678920</div>
-                        <div class="d-flex justify-content-around flex-grow-1">
-                            <button class="rounded-pill login-btn px-4 btn">EDIT</button>
-                            <button class="rounded-pill login-btn px-4 btn">DELETE</button>
-                            <button class="rounded-pill login-btn px-4 btn" data-bs-toggle="modal" data-bs-target="##viewModal">VIEW</button>
-                        </div>
-                    </div>
+                    </cfloop>
                 </div>
             </div>
         </div>
@@ -118,95 +121,113 @@
                 <div class="modal-content">
                     <div class="bg-lightblue d-flex px-3">
                         <div class="contact-details bg-white p-4 flex-grow-1 d-flex flex-column max-width-475">
-                            <div class="p-5 pb-3">
-                                <div class="heading p-3 text-center">
-                                    CREATE CONTACT
+                            <div class="p-5 pb-2">
+                                <div class="heading p-3 text-center" id="modal-heading">
                                 </div>
                             </div>
-                            <div class="p-5 pt-2 d-flex flex-column line-height-2">
-                                <div class="border-bottom border-primary mb-3">Personal Contact</div>
-                                <div class="d-flex justify-content-between">
-                                    <div class="d-flex flex-column w-25">
-                                        <label for="title">Title*</label>
-                                        <select name="title" id="title">
-                                            <option value=""></option>
-                                            <option value="Mr.">Mr.</option>
-                                            <option value="Mrs.">Mrs.</option>
-                                        </select>
+                            <form method="post" class="p-5 py-2" enctype="multipart/form-data">
+                                <div class="d-flex flex-column line-height-2">
+                                    <div class="subTitle mt-3 mb-1">Personal Contact</div>
+                                    <div class="d-flex justify-content-between my-3">
+                                        <div class="d-flex flex-column w-25">
+                                            <label for="title" class="label-title">Title*</label>
+                                            <select name="title" id="title">
+                                                <option value=""></option>
+                                                <option value="Mr.">Mr.</option>
+                                                <option value="Mrs.">Mrs.</option>
+                                            </select>
+                                        </div>
+                                        <div class="d-flex flex-column w-25">
+                                            <label for="firstName" class="label-title">FirstName*</label>
+                                            <input type="text" name = "firstName" placeholder="Your First Name" value="">
+                                        </div>
+                                        <div class="d-flex flex-column w-25">
+                                            <label for="lastName" class="label-title">LastName*</label>
+                                            <input type="text" name = "lastName" placeholder="Your Last Name">
+                                        </div>
                                     </div>
-                                    <div class="d-flex flex-column w-25">
-                                        <label for="firstName">FirstName*</label>
-                                        <input type="text" name = "firstName" placeholder="Your First Name">
+                                    <div class="d-flex justify-content-between my-3">
+                                        <div class="d-flex flex-column w-50 me-4">
+                                            <label for="gender" class="label-title">Gender*</label>
+                                            <select name="gender" id="gender">
+                                                <option value=""></option>
+                                                <option value="male">Male</option>
+                                                <option value="female">Female</option>
+                                            </select>
+                                        </div>
+                                        <div class="d-flex flex-column w-50">
+                                            <label for="dob" class="text-nowrap label-title">Date Of Birth*</label>
+                                            <input type="date" name = "dob">
+                                        </div>
                                     </div>
-                                    <div class="d-flex flex-column w-25">
-                                        <label for="firstName">LastName*</label>
-                                        <input type="text" name = "lastName" placeholder="Your Last Name">
+                                    <div class="d-flex">
+                                        <div class="d-flex flex-column">
+                                            <label for="contactProfile" class="text-nowrap my-2 label-title">Upload Photo</label>
+                                            <input type="file" name = "contactProfile">
+                                        </div>
+                                    </div>
+                                    <div class="subTitle mt-3 mb-1">Contact Details</div>
+                                    <div class="d-flex justify-content-between my-3">
+                                        <div class="d-flex flex-column w-50 me-3">
+                                            <label for="address" class="label-title">Address*</label>
+                                            <input type="text" name="address" placeholder="Your address">
+                                        </div>
+                                        <div class="d-flex flex-column w-50">
+                                            <label for="street" class="label-title">Street*</label>
+                                            <input type="text" name="street" placeholder="Your Street Name">
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between my-3">
+                                        <div class="d-flex flex-column w-50 me-3">
+                                            <label for="district" class="label-title">District*</label>
+                                            <input type="text" name="district" placeholder="Your district">
+                                        </div>
+                                        <div class="d-flex flex-column w-50">
+                                            <label for="state" class="label-title">State*</label>
+                                            <input type="text" name="state" placeholder="Your state Name">
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between my-3">
+                                        <div class="d-flex flex-column w-50 me-3">
+                                            <label for="country" class="label-title">Country*</label>
+                                            <input type="text" name="country" placeholder="Your country">
+                                        </div>
+                                        <div class="d-flex flex-column w-50">
+                                            <label for="pincode" class="label-title">Pincode*</label>
+                                            <input type="tel" name="pincode" placeholder="Your pincode" maxlength="6">
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between my-3">
+                                        <div class="d-flex flex-column w-50 me-3">
+                                            <label for="email" class="label-title">Email*</label>
+                                            <input type="text" name="email" placeholder="Your email">
+                                        </div>
+                                        <div class="d-flex flex-column w-50">
+                                            <label for="mobile" class="label-title">Mobile*</label>
+                                            <input type="tel" name="mobile" placeholder="Your mobile" maxlength="10">
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="d-flex justify-content-between">
-                                    <div class="d-flex flex-column w-50 me-4">
-                                        <label for="gender">Gender*</label>
-                                        <select name="gender" id="gender">
-                                            <option value=""></option>
-                                            <option value="male">Male</option>
-                                            <option value="female">Female</option>
-                                        </select>
-                                    </div>
-                                    <div class="d-flex flex-column w-50">
-                                        <label for="dob" class="text-nowrap">Date Of Birth*</label>
-                                        <input type="date" name = "dob">
-                                    </div>
+                                <cfif structKeyExists(form, "submit")>
+                                    <cfset local.createResult = application.objFunction.createContact(
+                                        form.title,form.firstName,form.lastName,form.gender,form.dob,
+                                        form.contactProfile,form.address,form.street,form.district,form.state,
+                                        form.country,form.pincode,form.email,form.mobile
+                                    )>
+
+                                    <cfloop collection="#local.createResult#" item="item">
+                                        <div class = "my-3 text-center">
+                                            <cfloop collection="#local.createResult#" item="item">
+                                                <div class = "#item# fw-bold">#local.createResult[item]#</div>
+                                            </cfloop>
+                                        </div>
+                                    </cfloop>
+                                </cfif>
+                                <div class="d-flex"> 
+                                    <button class="rounded-pill mx-auto btn btn-success text-nowrap" type = "submit" name = "submit" onclick="return contactValidation()">Save Changes</button>
+                                    <button class="rounded-pill w-25 mx-auto create-btn btn" data-bs-dismiss="modal">close</button>
                                 </div>
-                                <div class="d-flex">
-                                    <div class="d-flex flex-column">
-                                        <label for="contactProfile" class="text-nowrap my-2">Upload Photo</label>
-                                        <input type="file" name = "contactProfile">
-                                    </div>
-                                </div>
-                                <div class="border-bottom border-primary my-3">Contact Details</div>
-                                <div class="d-flex justify-content-between">
-                                    <div class="d-flex flex-column w-50 me-3">
-                                        <label for="address">Address*</label>
-                                        <input type="text" name="address" placeholder="Your address">
-                                    </div>
-                                    <div class="d-flex flex-column w-50">
-                                        <label for="street">Street*</label>
-                                        <input type="text" name="street" placeholder="Your Street Name">
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-between">
-                                    <div class="d-flex flex-column w-50 me-3">
-                                        <label for="district">District*</label>
-                                        <input type="text" name="district" placeholder="Your district">
-                                    </div>
-                                    <div class="d-flex flex-column w-50">
-                                        <label for="state">State*</label>
-                                        <input type="text" name="state" placeholder="Your state Name">
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-between">
-                                    <div class="d-flex flex-column w-50 me-3">
-                                        <label for="country">Country*</label>
-                                        <input type="text" name="country" placeholder="Your country">
-                                    </div>
-                                    <div class="d-flex flex-column w-50">
-                                        <label for="pincode">Pincode*</label>
-                                        <input type="number" name="pincode" placeholder="Your pincode">
-                                    </div>
-                                </div>
-                                <div class="d-flex justify-content-between">
-                                    <div class="d-flex flex-column w-50 me-3">
-                                        <label for="email">Email*</label>
-                                        <input type="text" name="email" placeholder="Your email">
-                                    </div>
-                                    <div class="d-flex flex-column w-50">
-                                        <label for="mobile">Mobile*</label>
-                                        <input type="text" name="mobile" placeholder="Your mobile">
-                                    </div>
-                                </div>
-                            </div>
-                            <button class="rounded-pill w-25 mx-auto create-btn btn"
-                                data-bs-dismiss="modal">close</button>
+                            </form>
                         </div>
                         <div class="flex-grow-1 d-flex justify-content-center mb-auto mt-5">
                             <img src="assets/designImages/profile.png" alt="profile" width="100">
@@ -215,10 +236,6 @@
                 </div>
             </div>
         </div>
-
-        <!--edit Modal-->
-        
-        
 
     </cfoutput>
     <script src="js/script.js"></script>
