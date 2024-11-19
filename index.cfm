@@ -31,7 +31,7 @@
             </li>
         </ul>
     </nav>
-    <div class="container my-5 d-flex p-0 w-50 bg-white border-radius-20 shadow-heavy">
+    <div class="container my-5 mt-3 d-flex p-0 w-50 bg-white border-radius-20 shadow-heavy">
         <div class="left-content d-flex align-items-center flex-grow-1 justify-content-center">
             <img src="assets/designImages/addressbook.png" alt="addressbook">
         </div>
@@ -41,11 +41,13 @@
                 <form method = "post" class = "align-items-center d-flex flex-column w-100" enctype="multipart/form-data">
                     <div class="w-100 py-4">
                         <input type="text" name="userName" class="border-0 border-bottom w-100" placeholder="username">
+                        <div id = "userName-error" class="text-danger fw-bold"></div>
                     </div>
                     <div class="w-100 py-4">
                         <input type="password" name="password" class="border-0 border-bottom w-100" placeholder="password">
+                        <div id = "password-error" class="text-danger fw-bold"></div>
                     </div>
-                    <input type = "submit" value = "LOGIN" name = "submit" class="rounded-pill login-btn form-control w-75 my-4 btn fw-bold">
+                    <input type = "submit" value = "LOGIN" onclick = "return loginValidation()" name = "submit" class="rounded-pill login-btn form-control w-75 my-4 btn fw-bold">
                     <div>Or Sign In Using </div>
                     <div class="d-flex align-items-center">
                         <a href="" class="me-1 py-3"><img src="assets/designImages/fb-icon.png" alt="fbIcon" width="50"></a>
@@ -53,12 +55,17 @@
                     </div>
                 </form>
                 <div>Don't have an account? <a href="signup.cfm" class="text-decoration-none">Register Here</a></div>
-                <cfif structKeyExists(form, "submit")>
-                    <cfset local.obj = createObject("component", "components.function")>
-                    <cfset local.result = local.obj.login(form.userName,form.password)>
-                </cfif>
+                <cfoutput>
+                    <cfif structKeyExists(form, "submit")>
+                        <cfset local.result = application.objFunction.login(form.userName,form.password)>
+                        <cfloop collection="#local.result#" item="item">
+                            <div class = "#item# fw-bold fs-3">#local.result['#item#']#</div>
+                        </cfloop>
+                    </cfif>
+                </cfoutput>
             </div>
         </div>
     </div>
+    <script src="js/script.js"></script>
 </body>
 </html>
