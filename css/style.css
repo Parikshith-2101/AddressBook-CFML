@@ -81,7 +81,7 @@ input:focus{
     width: 80px;
 }
 .emailDiv{
-    width: 170px;
+    width: 200px;
 }
 .numberDiv{
     width: 125px;
@@ -125,6 +125,20 @@ select,input{
 label.label-title {
     font-weight: 500;
     color: hsl(207.73deg 56.41% 45.88%);
+}
+.no-records {
+    font-size: 22px;
+    color: grey;
+    font-weight: 200;
+    position: relative;
+    animation: myanimation 4s infinite;
+}
+@keyframes myanimation {
+    0%   { color: red; left: 70px; top: 30px; }
+    25%  { color: blue; left: 250px; top: 15px; }
+    50%  { color: green; left: 500px; top: 30px; }
+    75%  { color: blue; left: 250px; top: 15px; }
+    100% { color: red; left: 70px; top: 30px; }
 }
 @media (min-width: 576px) {
     .modal-dialog {

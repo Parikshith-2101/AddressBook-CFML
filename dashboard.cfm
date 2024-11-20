@@ -28,7 +28,7 @@
         </ul>
     </nav>
     <cfoutput>
-        <div class="container d-flex flex-column">
+        <div class="container d-flex flex-column overflow-hidden">
             <div class="bg-white d-flex rounded">
                 <div class="d-flex p-3 ms-auto w-15 justify-content-around">
                     <a href=""><img src="assets/designImages/pdf.png" alt="pdf" width="30"></a>
@@ -51,30 +51,35 @@
                         <div class="numberDiv title me-3">PHONE NUMBER</div>
                     </div>
                     <cfset local.contactList = application.objFunction.contactList()>
-                    <cfloop query = "#local.contactList#">
-                        <div class="d-flex border-bottom py-3 align-items-center">
-                            <div class="profileImgDiv me-3">
-                                <img src="assets/contactProfileImages/#profilephoto#" alt="profile" width="60">
+                    <cfif queryRecordCount(local.contactList) GT 0>
+                        <cfloop query = "#local.contactList#">
+                            <div class="d-flex border-bottom py-3 align-items-center">
+                                <div class="profileImgDiv me-3">
+                                    <img src="assets/contactProfileImages/#profilephoto#" alt="profile" width="60" height="51">
+                                </div>
+                                <div class="nameDiv me-3">#local.contactList.firstName#</div>
+                                <div class="emailDiv me-3">#local.contactList.email#</div>
+                                <div class="numberDiv me-3">#local.contactList.mobile#</div>
+                                <div class="d-flex justify-content-around flex-grow-1">
+                                    <button class="rounded-pill login-btn px-4 btn" type="button" onclick="editContact('#local.contactList.contactID#')">EDIT</button>
+                                    <button class="rounded-pill login-btn px-4 btn" type="button" onclick="deleteContact('#local.contactList.contactID#')">DELETE</button>
+                                    <button class="rounded-pill login-btn px-4 btn" type="button" onclick="viewContact('#local.contactList.contactID#')">VIEW</button>
+                                </div>
                             </div>
-                            <div class="nameDiv me-3">#local.contactList.firstName#</div>
-                            <div class="emailDiv me-3">#local.contactList.email#</div>
-                            <div class="numberDiv me-3">#local.contactList.mobile#</div>
-                            <div class="d-flex justify-content-around flex-grow-1">
-                                <button class="rounded-pill login-btn px-4 btn" data-bs-toggle="modal" data-bs-target="##createModal" onclick="editModal()">EDIT</button>
-                                <button class="rounded-pill login-btn px-4 btn">DELETE</button>
-                                <button class="rounded-pill login-btn px-4 btn" data-bs-toggle="modal" data-bs-target="##viewModal">VIEW</button>
-                            </div>
-                        </div>
-                    </cfloop>
+                        </cfloop>
+                    <cfelse>
+                        <div class= "no-records">No Contact Records</div>
+                    </cfif>
                 </div>
             </div>
         </div>
         <!--view modal-->
+
         <div class="modal fade" id="viewModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
             aria-labelledby="viewModalLabel" aria-hidden="true">
             <div class="modal-dialog w-50">
                 <div class="modal-content">
-                    <div class="bg-lightblue d-flex px-3">
+                    <div class="bg-lightblue d-flex ps-3">
                         <div class="contact-details bg-white p-4 flex-grow-1 d-flex flex-column">
                             <div class="p-5 pb-3">
                                 <div class="heading p-3 text-center">
@@ -86,29 +91,47 @@
                                     <div class="details-div d-flex w-50 title fw-bold">Name<span
                                             class="ms-auto me-25">:</span>
                                     </div>
-                                    <div class="w-50">Miss. Anjana S</div>
+                                    <div class="w-50" id = "contactName"></div>
                                 </div>
                                 <div class="d-flex">
                                     <div class="details-div d-flex w-50 title fw-bold">Gender<span
                                             class="ms-auto me-25">:</span></div>
-                                    <div class="w-50">Female</div>
+                                    <div class="w-50" id = "contactGender"></div>
                                 </div>
                                 <div class="d-flex">
                                     <div class="details-div d-flex w-50 title fw-bold">Date of birth<span
                                             class="ms-auto me-25">:</span></div>
-                                    <div class="w-50">12/05/2021</div>
+                                    <div class="w-50" id="contactDOB">12/05/2021</div>
                                 </div>
                                 <div class="d-flex">
                                     <div class="details-div d-flex w-50 title fw-bold">Address<span
                                             class="ms-auto me-25">:</span></div>
-                                    <div class="w-50">Thaliyal street , thiruvattar psot , kanyakukari</div>
+                                    <div class="w-50" id="contactAdress"></div>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="details-div d-flex w-50 title fw-bold">Pincode<span
+                                            class="ms-auto me-25">:</span></div>
+                                    <div class="w-50" id="contactPincode"></div>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="details-div d-flex w-50 title fw-bold">Email Id<span
+                                            class="ms-auto me-25">:</span></div>
+                                    <div class="w-50" id="contactEmail"></div>
+                                </div>
+                                <div class="d-flex">
+                                    <div class="details-div d-flex w-50 title fw-bold">Phone<span
+                                            class="ms-auto me-25">:</span></div>
+                                    <div class="w-50" id="contactNumber"></div>
                                 </div>
                             </div>
                             <button class="rounded-pill w-25 mx-auto create-btn btn"
                                 data-bs-dismiss="modal">close</button>
                         </div>
-                        <div class="flex-grow-1 d-flex justify-content-center align-items-center">
-                            <img src="assets/designImages/profile.png" alt="profile" width="100">
+                        <div class="d-flex flex-column align-items-center mx-3">
+                            <button type="button" class="close w-25 mb-5 ms-auto btn" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <img src="assets/designImages/profile.png" alt="profile" width="100" id="contactProfile">
                         </div>
                     </div>
                 </div>
@@ -119,7 +142,7 @@
             aria-labelledby="createModalLabel" aria-hidden="true">
             <div class="modal-dialog w-50">
                 <div class="modal-content">
-                    <div class="bg-lightblue d-flex px-3">
+                    <div class="bg-lightblue d-flex ps-3">
                         <div class="contact-details bg-white p-4 flex-grow-1 d-flex flex-column max-width-475">
                             <div class="p-5 pb-2">
                                 <div class="heading p-3 text-center" id="modal-heading">
@@ -151,8 +174,8 @@
                                             <label for="gender" class="label-title">Gender*</label>
                                             <select name="gender" id="gender">
                                                 <option value=""></option>
-                                                <option value="male">Male</option>
-                                                <option value="female">Female</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
                                             </select>
                                         </div>
                                         <div class="d-flex flex-column w-50">
@@ -205,32 +228,41 @@
                                         <div class="d-flex flex-column w-50">
                                             <label for="mobile" class="label-title">Mobile*</label>
                                             <input type="tel" name="mobile" placeholder="Your mobile" maxlength="10">
+                                            <input type="text" name="contactID" value="" id="editContactID">
                                         </div>
                                     </div>
                                 </div>
-                                <cfif structKeyExists(form, "submit")>
-                                    <cfset local.createResult = application.objFunction.createContact(
-                                        form.title,form.firstName,form.lastName,form.gender,form.dob,
-                                        form.contactProfile,form.address,form.street,form.district,form.state,
-                                        form.country,form.pincode,form.email,form.mobile
-                                    )>
-
-                                    <cfloop collection="#local.createResult#" item="item">
-                                        <div class = "my-3 text-center">
-                                            <cfloop collection="#local.createResult#" item="item">
-                                                <div class = "#item# fw-bold">#local.createResult[item]#</div>
-                                            </cfloop>
-                                        </div>
-                                    </cfloop>
-                                </cfif>
                                 <div class="d-flex"> 
-                                    <button class="rounded-pill mx-auto btn btn-success text-nowrap" type = "submit" name = "submit" onclick="return contactValidation()">Save Changes</button>
+                                    <button class="rounded-pill mx-auto btn btn-success text-nowrap" type = "submit" name = "createContactButton" id="submitButton" onclick="return contactValidation()">Save Changes</button>
                                     <button class="rounded-pill w-25 mx-auto create-btn btn" data-bs-dismiss="modal">close</button>
                                 </div>
                             </form>
+                            <cfif structKeyExists(form, "createContactButton")>
+                                <cfset local.createResult = application.objFunction.createContact(
+                                    form.title,form.firstName,form.lastName,form.gender,form.dob,
+                                    form.contactProfile,form.address,form.street,form.district,form.state,
+                                    form.country,form.pincode,form.email,form.mobile
+                                )>
+                                <div class = "my-3 text-center">
+                                    <cfloop collection="#local.createResult#" item="item">
+                                        <div class = "#item# fw-bold">#local.createResult[item]#</div>
+                                    </cfloop>
+                                </div>
+                            </cfif>
+
+                            <cfif structKeyExists(form, "editContactButton")>
+                                <cfset local.editResult = application.objFunction.editContact(
+                                    form.title,form.firstName,form.lastName,form.gender,form.dob,
+                                    form.contactProfile,form.address,form.street,form.district,form.state,
+                                    form.country,form.pincode,form.email,form.mobile,form.contactID
+                                )>
+                            </cfif>
                         </div>
-                        <div class="flex-grow-1 d-flex justify-content-center mb-auto mt-5">
-                            <img src="assets/designImages/profile.png" alt="profile" width="100">
+                        <div class="flex-grow-1 d-flex flex-column align-items-center mb-auto">
+                            <button type="button" class="close w-25 mb-5 ms-auto btn" data-bs-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <img src="assets/designImages/profile.png" alt="profile" width="100" id = "editContactProfile">
                         </div>
                     </div>
                 </div>

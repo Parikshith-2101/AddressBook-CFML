@@ -118,7 +118,7 @@ function contactValidation(){
         firstName.parentElement.style.background = "unset";
     }
 
-    if(lastName.value === "" || lastName.value.length < 3){
+    if(lastName.value === ""){
         lastName.parentElement.style.border = "1px solid #ff0000";
         lastName.parentElement.style.background = "#fdb1b1";
         isValid = false;
@@ -215,7 +215,7 @@ function contactValidation(){
         email.parentElement.style.border = "unset";
         email.parentElement.style.background = "unset";
     }
-    if(number.value === "" || !NaN(number.value)){
+    if(number.value === ""){
         number.parentElement.style.border = "1px solid #ff0000";
         number.parentElement.style.background = "#fdb1b1";
         isValid = false;
@@ -228,9 +228,104 @@ function contactValidation(){
         event.preventDefault();
     }
 }
-function editModal(){
-    document.getElementById("modal-heading").innerText = "EDIT CONTACT";
+
+function viewContact(contactID){
+    $.ajax({
+        url: 'components/function.cfc?method=viewContact',
+        method: 'POST',
+        data:{contactID : contactID},
+        success: function(data) {
+            const myData = JSON.parse(data)
+            console.log(myData);
+            $("#contactName").text(myData.TITLE+' '+myData.FIRSTNAME+' '+myData.LASTNAME);
+            $("#contactGender").text(myData.GENDER);
+
+            let DateOfBirth = myData.DATEOFBIRTH.replace(",", "");
+            let dateOfBirth = new Date(DateOfBirth);
+            let day = dateOfBirth.getDate();
+            let month = dateOfBirth.getMonth()+1;
+            let year = dateOfBirth.getFullYear();
+
+            $("#contactDOB").text(day+'-'+month+'-'+year);
+            $("#contactAdress").text(myData.STREET+', '+myData.ADDRESS+', '+myData.DISTRICT+', '+myData.STATE+', '+myData.COUNTRY);
+            $("#contactPincode").text(myData.PINCODE);
+            $("#contactEmail").text(myData.EMAIL);
+            $("#contactNumber").text(myData.MOBILE);
+            $("#contactProfile").attr("src", "assets/contactProfileImages/"+myData.PROFILEPHOTO);
+            $('#viewModal').modal('show');
+        }
+    });
 }
+
 function createModal(){
-    document.getElementById("modal-heading").innerText = "CREATE CONTACT";
+    $("#modal-heading").text("CREATE CONTACT");
+    $("#submitButton").attr("name", "createContactButton");
+    $("#title").val('');
+    $("input[name='firstName']").first().val('');
+    $("input[name='lastName']").first().val('');
+    $("#gender").val('');
+    $("input[name='dob']").first().val('');
+    $("input[name='address']").first().val('');
+    $("input[name='street']").first().val('');
+    $("input[name='district']").first().val('');
+    $("input[name='state']").first().val('');
+    $("input[name='country']").first().val('');
+    $("input[name='pincode']").first().val('');
+    $("input[name='email']").first().val('');
+    $("input[name='mobile']").first().val('');
+    $("#editContactProfile").attr("src", "assets/designImages/profile.png"); 
+}
+function editContact(contactID){
+    $("#modal-heading").text("EDIT CONTACT");
+    $("#submitButton").attr("name", "editContactButton");
+    $("#editContactID").val(contactID);
+    $.ajax({
+        url: 'components/function.cfc?method=viewContact',
+        method: 'POST',
+        data:{contactID : contactID},
+        success: function(data) {
+            const myData = JSON.parse(data)
+            console.log(myData);
+            $("#title").val(myData.TITLE);
+            $("input[name='firstName']").first().val(myData.FIRSTNAME);
+            $("input[name='lastName']").first().val(myData.LASTNAME);
+            $("#gender").val(myData.GENDER);
+
+            let DateOfBirth = myData.DATEOFBIRTH.replace(",", "");
+            let dateOfBirth = new Date(DateOfBirth);
+            let day = dateOfBirth.getDate();
+            if(day < 10){
+                day = '0' + day;
+            }
+            let month = dateOfBirth.getMonth()+1;
+            if(month < 10){
+                month = '0' + month;
+            }
+            let year = dateOfBirth.getFullYear();
+
+            $("input[name='dob']").first().val(year+'-'+month+'-'+day);
+            $("input[name='address']").first().val(myData.ADDRESS);
+            $("input[name='street']").first().val(myData.STREET);
+            $("input[name='district']").first().val(myData.DISTRICT);
+            $("input[name='state']").first().val(myData.STATE);
+            $("input[name='country']").first().val(myData.COUNTRY);
+            $("input[name='pincode']").first().val(myData.PINCODE);
+            $("input[name='email']").first().val(myData.EMAIL);
+            $("input[name='mobile']").first().val(myData.MOBILE);
+            $("#editContactProfile").attr("src", "assets/contactProfileImages/"+myData.PROFILEPHOTO);
+            $('#createModal'). modal('show');
+        }
+    });
+}
+function deleteContact(contactID){
+    if(confirm("Delete! Are you sure?")){
+        $.ajax({
+            type: "POST",
+            url: "components/function.cfc?method=deleteContact",
+            data: {contactID : contactID},
+            success: function() {
+                location.reload()
+            },
+        });
+    }         
 }
