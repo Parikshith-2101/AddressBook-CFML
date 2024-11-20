@@ -59,7 +59,7 @@
                         <input type="password" id="confirmPassword" class="border-0 border-bottom w-100" placeholder="Confirm password">
                         <div id="confirmpassError" class="text-danger fw-bold"></div>
                     </div>
-                    <input type="file" name="profileImage" id="profileImage" accept="image/png, image/jpeg">  
+                    <input type="file" name="profileImage" id="profileImage" accept="image/png, image/jpeg, image/webp">  
                     <div id="profileError" class="text-danger fw-bold"></div>             
                     <input type = "submit" value = "REGISTER" name = "submit" onclick = "return signupValidation()" class="rounded-pill login-btn form-control w-75 my-4 btn fw-bold">
                 </form>
