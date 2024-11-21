@@ -274,11 +274,13 @@ function createModal(){
     $("input[name='email']").first().val('');
     $("input[name='mobile']").first().val('');
     $("#editContactProfile").attr("src", "assets/designImages/profile.png"); 
+    $("#editContactID").hide();
 }
 function editContact(contactID){
     $("#modal-heading").text("EDIT CONTACT");
     $("#submitButton").attr("name", "editContactButton");
     $("#editContactID").val(contactID);
+    $("#editContactID").show();
     $.ajax({
         url: 'components/function.cfc?method=viewContact',
         method: 'POST',
@@ -290,7 +292,6 @@ function editContact(contactID){
             $("input[name='firstName']").first().val(myData.FIRSTNAME);
             $("input[name='lastName']").first().val(myData.LASTNAME);
             $("#gender").val(myData.GENDER);
-
             let DateOfBirth = myData.DATEOFBIRTH.replace(",", "");
             let dateOfBirth = new Date(DateOfBirth);
             let day = dateOfBirth.getDate();
@@ -302,7 +303,6 @@ function editContact(contactID){
                 month = '0' + month;
             }
             let year = dateOfBirth.getFullYear();
-
             $("input[name='dob']").first().val(year+'-'+month+'-'+day);
             $("input[name='address']").first().val(myData.ADDRESS);
             $("input[name='street']").first().val(myData.STREET);
@@ -328,4 +328,31 @@ function deleteContact(contactID){
             },
         });
     }         
+}
+
+function printFunction(){
+    $(".print-none").removeClass('d-flex').addClass('d-none');
+    $(".login-btn").hide();
+    $(".navbar").hide();
+    window.print();
+}
+
+function exportExcel(){
+    $.ajax({
+        type: "POST",
+        url: "components/function.cfc?method=exportExcel",
+        success: function() {
+            alert("Excel Exported Successfully")
+        },
+    });
+}
+
+function exportPDF(){
+    $.ajax({
+        type: "POST",
+        url: "components/function.cfc?method=exportPDF",
+        success: function() {
+            alert("PDF Exported Successfully")
+        },
+    });
 }

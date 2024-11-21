@@ -133,6 +133,9 @@ label.label-title {
     position: relative;
     animation: myanimation 4s infinite;
 }
+.z-n1{
+    z-index: -1;
+}
 @keyframes myanimation {
     0%   { color: red; left: 70px; top: 30px; }
     25%  { color: blue; left: 250px; top: 15px; }
