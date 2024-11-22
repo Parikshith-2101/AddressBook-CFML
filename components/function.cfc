@@ -91,10 +91,10 @@
             SELECT firstName, lastName , email , mobile 
             FROM contactDetails
             WHERE email = <cfqueryparam value = "#arguments.email#" cfsqltype = "cf_sql_varchar">
-            AND mobile = <cfqueryparam value = "#arguments.mobile#" cfsqltype = "cf_sql_varchar">
+            OR mobile = <cfqueryparam value = "#arguments.mobile#" cfsqltype = "cf_sql_varchar">
         </cfquery>
 
-        <cfif queryRecordCount(qryFetchData) EQ 0 AND trim(arguments.email) NEQ trim(session.emailID)>
+        <cfif (queryRecordCount(qryFetchData) EQ 0) AND (trim(arguments.email) NEQ trim(session.emailID))>
 
             <cfif len(trim(arguments.profilePhoto))>
                 <cffile action = "upload" destination = "#expandPath("assets/contactProfileImages/")#" nameconflict = "MakeUnique">
@@ -125,8 +125,8 @@
                 );
             </cfquery>
 
-            <cfset local.output['green'] = "Contact Added Successfully">
             <cflocation url = "dashboard.cfm" addToken = "No">
+            <cfset local.output['green'] = "Contact Added Successfully">
         <cfelse>
             <cfset local.output['red'] = "Contact Already Exists">
         </cfif>
@@ -167,7 +167,7 @@
 
     </cffunction>
 
-    <cffunction name = "editContact" access = "public" returnType = "void">
+    <cffunction name = "editContact" access = "public" returnType = "Struct">
         <cfargument name = "title">
         <cfargument name = "firstName">
         <cfargument name = "lastName">
@@ -183,63 +183,91 @@
         <cfargument name = "email">
         <cfargument name = "mobile">
         <cfargument name = "contactID">
+        <cfset local.output = structNew()>
 
-        <cfif len(trim(arguments.profilePhoto))>
-            <cffile action = "upload" destination = "#expandPath("assets/contactProfileImages/")#" nameconflict = "MakeUnique">
-            <cfset local.getFilePath = cffile['SERVERFILE']>
-        <cfelse>
-            <cfquery name = "fetchPhoto">
-                SELECT profilephoto 
-                FROM contactDetails
-                WHERE contactID = <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">;
-            </cfquery>
-            <cfset local.getFilePath = fetchPhoto.profilephoto>
-        </cfif>
-
-        <cfquery name = "editContact">
-            UPDATE contactDetails
-            SET 
-                title = <cfqueryparam value = "#arguments.title#" cfsqltype = "cf_sql_varchar">, 
-                firstName = <cfqueryparam value = "#arguments.firstName#" cfsqltype = "cf_sql_varchar">,
-                lastName = <cfqueryparam value = "#arguments.lastName#" cfsqltype = "cf_sql_varchar">,
-                gender = <cfqueryparam value = "#arguments.gender#" cfsqltype = "cf_sql_varchar">,
-                dateOfBirth = <cfqueryparam value = "#arguments.dob#" cfsqltype = "cf_sql_varchar">, 
-                address = <cfqueryparam value = "#arguments.address#" cfsqltype = "cf_sql_varchar">,
-                street = <cfqueryparam value = "#arguments.street#" cfsqltype = "cf_sql_varchar">,
-                district = <cfqueryparam value = "#arguments.district#" cfsqltype = "cf_sql_varchar">,
-                state = <cfqueryparam value = "#arguments.state#" cfsqltype = "cf_sql_varchar">,
-                country = <cfqueryparam value = "#arguments.country#" cfsqltype = "cf_sql_varchar">,
-                pincode = <cfqueryparam value = "#arguments.pincode#" cfsqltype = "cf_sql_varchar">,
-                email = <cfqueryparam value = "#arguments.email#" cfsqltype = "cf_sql_varchar">,
-                mobile = <cfqueryparam value = "#arguments.mobile#" cfsqltype = "cf_sql_varchar">,
-                profilephoto = <cfqueryparam value = "#local.getFilePath#" cfsqltype = "cf_sql_varchar">
+        <cfquery name = "qryFetchData">
+            SELECT profilephoto, email, mobile
+            FROM contactDetails
             WHERE contactID = <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">;
         </cfquery>
 
-        <cflocation url = "dashboard.cfm" addToken = "No">
+        <cfif (qryFetchData.email NEQ arguments.email) OR (qryFetchData.mobile NEQ arguments.mobile)>
 
+            <cfquery name = "qryReferData">
+                SELECT firstName, lastName , email , mobile 
+                FROM contactDetails
+                WHERE email = <cfqueryparam value = "#arguments.email#" cfsqltype = "cf_sql_varchar">
+                OR mobile = <cfqueryparam value = "#arguments.mobile#" cfsqltype = "cf_sql_varchar">
+            </cfquery>
+
+            <cfif (queryRecordCount(qryReferData) NEQ 0) AND (trim(arguments.email) EQ trim(session.emailID))>
+
+                <cfset local.output['red'] = "Contact Already Exists">
+
+                <cfreturn local.output>
+
+            </cfif>
+        <cfelse>
+
+            <cfif len(trim(arguments.profilePhoto))>
+                <cffile action = "upload" destination = "#expandPath("assets/contactProfileImages/")#" nameconflict = "MakeUnique">
+                <cfset local.getFilePath = cffile['SERVERFILE']>
+            <cfelse>
+                <cfset local.getFilePath = qryFetchData.profilephoto>
+            </cfif>
+
+            <cfquery name = "qryEditContact">
+                UPDATE contactDetails
+                SET 
+                    title = <cfqueryparam value = "#arguments.title#" cfsqltype = "cf_sql_varchar">, 
+                    firstName = <cfqueryparam value = "#arguments.firstName#" cfsqltype = "cf_sql_varchar">,
+                    lastName = <cfqueryparam value = "#arguments.lastName#" cfsqltype = "cf_sql_varchar">,
+                    gender = <cfqueryparam value = "#arguments.gender#" cfsqltype = "cf_sql_varchar">,
+                    dateOfBirth = <cfqueryparam value = "#arguments.dob#" cfsqltype = "cf_sql_varchar">, 
+                    address = <cfqueryparam value = "#arguments.address#" cfsqltype = "cf_sql_varchar">,
+                    street = <cfqueryparam value = "#arguments.street#" cfsqltype = "cf_sql_varchar">,
+                    district = <cfqueryparam value = "#arguments.district#" cfsqltype = "cf_sql_varchar">,
+                    state = <cfqueryparam value = "#arguments.state#" cfsqltype = "cf_sql_varchar">,
+                    country = <cfqueryparam value = "#arguments.country#" cfsqltype = "cf_sql_varchar">,
+                    pincode = <cfqueryparam value = "#arguments.pincode#" cfsqltype = "cf_sql_varchar">,
+                    email = <cfqueryparam value = "#arguments.email#" cfsqltype = "cf_sql_varchar">,
+                    mobile = <cfqueryparam value = "#arguments.mobile#" cfsqltype = "cf_sql_varchar">,
+                    profilephoto = <cfqueryparam value = "#local.getFilePath#" cfsqltype = "cf_sql_varchar">
+                WHERE contactID = <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">;
+            </cfquery>
+
+        </cfif>
+        <cflocation url = "dashboard.cfm" addToken = "No">
+        <cfset local.output['green'] = "Contact Added Successfully">
+
+        <cfreturn local.output>
     </cffunction>
 
-    <cffunction name = "exportExcel" access = "remote" returnType = "void">
+    <cffunction name = "exportExcel" access = "public" returnType = "query">
 
-        <cfquery name = "contactDetails">
+        <cfquery name = "qryContactDetails">
             SELECT title, firstName, lastName, gender, dateOfBirth, address, street, district, state, country, pincode, email, mobile
             FROM contactDetails
             WHERE _createdBy = <cfqueryparam value = "#session.userID#" cfsqltype = "cf_sql_varchar">;
         </cfquery>
 
-        <cfspreadsheet action = "write" query = "contactDetails" filename = "../spreadsheet/addressBookReport.xlsx" sheetname = "AddressBook" overwrite = "true">
+        <cfset local.output = qryContactDetails>
+
+        <cfreturn local.output>
+        <cfreturn >
     </cffunction>
 
-    <cffunction name = "exportPDF" access = "remote" returnType = "query">
+    <cffunction name = "exportPDF" access = "public" returnType = "query">
 
-        <cfquery name = "contactDetails">
+        <cfquery name = "qryContactDetails">
             SELECT title, firstName, lastName, gender, dateOfBirth, address, street, district, state, country, pincode, email, mobile, profilephoto
             FROM contactDetails
             WHERE _createdBy = <cfqueryparam value = "#session.userID#" cfsqltype = "cf_sql_varchar">;
-        </cfquery>
+        </cfquery> 
 
-        <cfreturn contactDetails>
+        <cfset local.output = qryContactDetails>
+
+        <cfreturn local.output>
     </cffunction>
     
 </cfcomponent>
