@@ -227,6 +227,9 @@ function contactValidation(){
     if(!isValid){
         event.preventDefault();
     }
+    if(isValid){
+        window.location.reload();
+    }
 }
 
 function viewContact(contactID){
@@ -275,8 +278,10 @@ function createModal(){
     $("input[name='mobile']").first().val('');
     $("#editContactProfile").attr("src", "assets/designImages/profile.png"); 
     $("#editContactID").hide();
+    $('#createModal').modal('show');
 }
 function editContact(contactID){
+    $("#myForm")[0].reset();
     $("#modal-heading").text("EDIT CONTACT");
     $("#submitButton").attr("name", "editContactButton");
     $("#editContactID").val(contactID);
@@ -335,24 +340,4 @@ function printFunction(){
     $(".login-btn").hide();
     $(".navbar").hide();
     window.print();
-}
-
-function exportExcel(){
-    $.ajax({
-        type: "POST",
-        url: "components/function.cfc?method=exportExcel",
-        success: function() {
-            alert("Excel Exported Successfully")
-        },
-    });
-}
-
-function exportPDF(){
-    $.ajax({
-        type: "POST",
-        url: "components/function.cfc?method=exportPDF",
-        success: function() {
-            alert("PDF Exported Successfully")
-        },
-    });
 }
