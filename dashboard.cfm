@@ -200,7 +200,7 @@
                                         <div class="d-flex">
                                             <div class="d-flex flex-column">
                                                 <label for="contactProfile" class="text-nowrap my-2 label-title">Upload Photo</label>
-                                                <input type="file" name="contactProfile">
+                                                <input type="file" name="contactProfile" accept="image/png, image/jpeg, image/webp">
                                             </div>
                                         </div>
                                         <div class="subTitle mt-3 mb-1">Contact Details</div>
@@ -270,26 +270,31 @@
                 <cfset local.createResult=application.objFunction.createContact(
                     form.title,form.firstName,form.lastName,form.gender,form.dob,
                     form.contactProfile,form.address,form.street,form.district,form.state,
-                    form.country,form.pincode,form.email,form.mobile )>
+                    form.country,form.pincode,form.email,form.mobile 
+                )>
 
+                <div class = "errorServerSide">
                     <div class="my-3 text-center">
                         <cfloop collection="#local.createResult#" item="item">
                             <div class="#item# fw-bold">#local.createResult[item]#</div>
                         </cfloop>
                     </div>
+                </div>
             </cfif>
 
             <cfif structKeyExists(form, "editContactButton" )>
                 <cfset local.editResult=application.objFunction.editContact(
                     form.title,form.firstName,form.lastName,form.gender,form.dob,
                     form.contactProfile,form.address,form.street,form.district,form.state,
-                    form.country,form.pincode,form.email,form.mobile,form.contactID )>
-
+                    form.country,form.pincode,form.email,form.mobile,form.contactID 
+                    )>
+                <div class = "errorServerSide">
                     <div class="my-3 text-center">
                         <cfloop collection="#local.editResult#" item="item">
                             <div class="#item# fw-bold">#local.editResult[item]#</div>
                         </cfloop>
                     </div>
+                </div>
             </cfif>
 
             <cfspreadsheet action = "write" query = "local.exportExcel" filename = "FileReports/addressBookReport.xlsx" sheetname = "AddressBook" overwrite = "true">
@@ -297,7 +302,7 @@
             <cfdocument format="pdf" filename="FileReports/addressBookReport.pdf" overwrite="true"
                 orientation="landscape">
                 <h1>Address Book Report</h1>
-                <table border="1">
+                <table border="1" >
                     <tr>
                         <th>Photo</th>
                         <th>Title</th>
