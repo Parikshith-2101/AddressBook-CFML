@@ -51,7 +51,7 @@
                     <div>Or Sign In Using </div>
                     <div class="d-flex align-items-center">
                         <a href="" class="me-1 py-3"><img src="assets/designImages/fb-icon.png" alt="fbIcon" width="50"></a>
-                        <a href="" class="py-3"><img src="assets/designImages/gmail-icon.png" alt="gmailIcon" width="50" class="g-img"></a>
+                        <button class="py-3 btn" type = "submit" name = "googleSignin"><img src="assets/designImages/gmail-icon.png" alt="gmailIcon" width="50" class="g-img"></button>
                     </div>
                 </form>
                 <div>Don't have an account? <a href="signup.cfm" class="text-decoration-none">Register Here</a></div>
@@ -61,6 +61,16 @@
                         <cfloop collection="#local.result#" item="item">
                             <div class = "#item# fw-bold fs-3">#local.result['#item#']#</div>
                         </cfloop>
+                    </cfif>
+                    <cfif structKeyExists(form, "googleSignin")>
+
+                        <cfoauth
+                            type = "Google"
+                            result = "result"
+                        >
+
+                        <cfdump var = "#result#">
+ 
                     </cfif>
                 </cfoutput>
             </div>
