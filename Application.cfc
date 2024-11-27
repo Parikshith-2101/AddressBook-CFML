@@ -6,10 +6,13 @@
 
     <cffunction name = "onRequest">
         <cfargument name = "requestPage">
-        <cfif structKeyExists(session, "fullName") OR arguments.requestPage EQ "/Tasks/AddressBook-CFML/signup.cfm">
+        <cfif structKeyExists(session, "fullName") 
+            OR arguments.requestPage EQ "/signup.cfm" 
+            OR arguments.requestPage EQ "/googleSSO.cfm"
+        >
             <cfinclude template = "#arguments.requestPage#">
         <cfelse> 
-            <cfinclude template = "/Tasks/AddressBook-CFML/index.cfm">
+            <cfinclude template = "/index.cfm">
         </cfif>
     </cffunction>
     

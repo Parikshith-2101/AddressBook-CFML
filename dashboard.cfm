@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Address Book</title>
-    <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
@@ -49,7 +49,11 @@
                 </div>
                 <div class="d-flex mt-4">
                     <div class="userProfile d-flex flex-column bg-white p-3 align-items-center rounded print-none">
-                        <img src="assets/userProfileImages/#session.profileImage#" alt="profile" class="rounded-circle" width="80" height="80">
+                        <cfif structKeyExists(session, "photo")>
+                            <img src="#session.photo#" alt="profile" class="rounded-circle" width="80" height="80">
+                        <cfelse>
+                            <img src="assets/userProfileImages/#session.profileImage#" alt="profile" class="rounded-circle" width="80" height="80">
+                        </cfif>
                         <p class="user-fullName text-uppercase my-3">#session.fullName#</p>
                         <button class="rounded-pill create-btn btn" onclick="createModal()">Create contact</button>
                     </div>
@@ -200,7 +204,7 @@
                                         <div class="d-flex">
                                             <div class="d-flex flex-column">
                                                 <label for="contactProfile" class="text-nowrap my-2 label-title">Upload Photo</label>
-                                                <input type="file" name="contactProfile">
+                                                <input type="file" name="contactProfile" accept="image/png, image/jpeg, image/webp">
                                             </div>
                                         </div>
                                         <div class="subTitle mt-3 mb-1">Contact Details</div>
@@ -270,26 +274,31 @@
                 <cfset local.createResult=application.objFunction.createContact(
                     form.title,form.firstName,form.lastName,form.gender,form.dob,
                     form.contactProfile,form.address,form.street,form.district,form.state,
-                    form.country,form.pincode,form.email,form.mobile )>
+                    form.country,form.pincode,form.email,form.mobile 
+                )>
 
+                <div class = "errorServerSide">
                     <div class="my-3 text-center">
                         <cfloop collection="#local.createResult#" item="item">
                             <div class="#item# fw-bold">#local.createResult[item]#</div>
                         </cfloop>
                     </div>
+                </div>
             </cfif>
 
             <cfif structKeyExists(form, "editContactButton" )>
                 <cfset local.editResult=application.objFunction.editContact(
                     form.title,form.firstName,form.lastName,form.gender,form.dob,
                     form.contactProfile,form.address,form.street,form.district,form.state,
-                    form.country,form.pincode,form.email,form.mobile,form.contactID )>
-
+                    form.country,form.pincode,form.email,form.mobile,form.contactID 
+                    )>
+                <div class = "errorServerSide">
                     <div class="my-3 text-center">
                         <cfloop collection="#local.editResult#" item="item">
                             <div class="#item# fw-bold">#local.editResult[item]#</div>
                         </cfloop>
                     </div>
+                </div>
             </cfif>
 
             <cfspreadsheet action = "write" query = "local.exportExcel" filename = "FileReports/addressBookReport.xlsx" sheetname = "AddressBook" overwrite = "true">
@@ -297,7 +306,7 @@
             <cfdocument format="pdf" filename="FileReports/addressBookReport.pdf" overwrite="true"
                 orientation="landscape">
                 <h1>Address Book Report</h1>
-                <table border="1">
+                <table border="1" >
                     <tr>
                         <th>Photo</th>
                         <th>Title</th>
@@ -336,9 +345,9 @@
             </cfdocument>
 
         </cfoutput>
+        <script src="bootstrap/js/bootstrap.min.js"></script>
+        <script src="jquery/jquery-3.7.1.min.js"></script>
         <script src="js/script.js"></script>
-        <script src="../bootstrap/js/bootstrap.min.js"></script>
-        <script src="../jquery/jquery-3.7.1.min.js"></script>
     </body>
 
 </html>
