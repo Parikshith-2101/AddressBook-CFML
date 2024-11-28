@@ -228,7 +228,7 @@ function contactValidation(){
         event.preventDefault();
     }
     if(isValid){
-        window.location.reload();
+        
     }
 }
 
@@ -278,6 +278,7 @@ function createModal(){
     $("input[name='mobile']").first().val('');
     $("#editContactProfile").attr("src", "assets/designImages/profile.png"); 
     $("#editContactID").hide();
+    $("#editContactID").val("");
     $('#createModal').modal('show');
 }
 function editContact(contactID){
