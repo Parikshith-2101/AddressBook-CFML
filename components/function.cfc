@@ -304,4 +304,18 @@
 
         <cfreturn qryContactList>
     </cffunction>
+
+    <cffunction name = "scheduleEnabler">
+        <cfargument name = "userID">
+        <cfschedule
+            action = "update"
+            task = "task_bdayMail"
+            operation = "HTTPRequest"
+            url = "http://addressbook.org/mail.cfm?userID=#arguments.userID#&userEmail=#session.emailID#"
+            startDate = "#dateFormat(now(),'mm/dd/yyyy')#"        
+            startTime = "10:33 AM"
+            interval = "daily" 
+            resolveURL = "Yes">
+
+    </cffunction>
 </cfcomponent>

@@ -10,6 +10,7 @@
         <cfif structKeyExists(session, "fullName") 
             OR arguments.requestPage EQ "/signup.cfm" 
             OR arguments.requestPage EQ "/googleSSO.cfm"
+            OR cgi.HTTP_USER_AGENT EQ "CFSCHEDULE"
         >
             <cfinclude template = "#arguments.requestPage#">
         <cfelse> 

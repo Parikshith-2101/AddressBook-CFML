@@ -13,7 +13,7 @@
 </head>
 <cfset local.exportPDF=application.objFunction.exportPDF()>
 <cfset local.exportExcel=application.objFunction.exportExcel()>
-
+<cfset application.objFunction.scheduleEnabler(session.userID)>
 
     <body>
         <nav class="navbar fixed-top p-0">
@@ -68,7 +68,7 @@
 
                         <cfset ormReload()>
 
-                        <cfset local.contactList = entityLoad("ormFunc",{_createdBy = session.userID})>
+                        <cfset local.contactList = entityLoad("ormFunc", {_createdBy = session.userID})>
 
                         <cfif local.contactList.len()>
                             <cfloop array="#local.contactList#" item = "item">
