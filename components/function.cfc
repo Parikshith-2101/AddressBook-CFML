@@ -174,38 +174,29 @@
         <cfargument name = "mobile">
         <cfargument name = "contactID">
         <cfset local.output = structNew()>
-
         <cfquery name = "qryFetchData">
             SELECT profilephoto, email, mobile
             FROM contactDetails
             WHERE contactID = <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">;
         </cfquery>
-
         <cfif (qryFetchData.email NEQ arguments.email) OR (qryFetchData.mobile NEQ arguments.mobile)>
-
             <cfquery name = "qryReferData">
                 SELECT firstName, lastName , email , mobile 
                 FROM contactDetails
                 WHERE email = <cfqueryparam value = "#arguments.email#" cfsqltype = "cf_sql_varchar">
                 OR mobile = <cfqueryparam value = "#arguments.mobile#" cfsqltype = "cf_sql_varchar">
             </cfquery>
-
             <cfif (queryRecordCount(qryReferData) NEQ 0) AND (trim(arguments.email) EQ trim(session.emailID))>
-
                 <cfset local.output['red'] = "Contact Already Exists">
-
                 <cfreturn local.output>
-
             </cfif>
         <cfelse>
-
             <cfif len(trim(arguments.profilePhoto))>
                 <cffile action = "upload" destination = "#expandPath("assets/contactProfileImages/")#" nameconflict = "MakeUnique">
                 <cfset local.getFilePath = cffile['SERVERFILE']>
             <cfelse>
                 <cfset local.getFilePath = qryFetchData.profilephoto>
             </cfif>
-
             <cfquery name = "qryEditContact">
                 UPDATE contactDetails
                 SET 
@@ -225,38 +216,30 @@
                     profilephoto = <cfqueryparam value = "#local.getFilePath#" cfsqltype = "cf_sql_varchar">
                 WHERE contactID = <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">;
             </cfquery>
-
         </cfif>
         <cflocation url = "dashboard.cfm" addToken = "No">
         <cfset local.output['green'] = "Contact Added Successfully">
-
         <cfreturn local.output>
     </cffunction>
 
     <cffunction name = "exportExcel" access = "public" returnType = "query">
-
         <cfquery name = "qryContactDetails">
             SELECT title, firstName, lastName, gender, dateOfBirth, address, street, district, state, country, pincode, email, mobile
             FROM contactDetails
             WHERE _createdBy = <cfqueryparam value = "#session.userID#" cfsqltype = "cf_sql_varchar">;
         </cfquery>
-
         <cfset local.output = qryContactDetails>
-
         <cfreturn local.output>
         <cfreturn >
     </cffunction>
 
     <cffunction name = "exportPDF" access = "public" returnType = "query">
-
         <cfquery name = "qryContactDetails">
             SELECT title, firstName, lastName, gender, dateOfBirth, address, street, district, state, country, pincode, email, mobile, profilephoto
             FROM contactDetails
             WHERE _createdBy = <cfqueryparam value = "#session.userID#" cfsqltype = "cf_sql_varchar">;
         </cfquery> 
-
         <cfset local.output = qryContactDetails>
-
         <cfreturn local.output>
     </cffunction>
 	
@@ -265,14 +248,12 @@
         <cfset session.fullName = arguments.structSSO.name>
         <cfset session.emailID = arguments.structSSO.other.email>
         <cfset session.photo = arguments.structSSO.other.picture>
-
         <cfquery name = "qryFetchData">
             SELECT email
             FROM addressBook
             WHERE email = <cfqueryparam value = "#session.emailID#" cfsqltype = "cf_sql_varchar">
             AND password IS NULL;
         </cfquery>
-
         <cfif queryRecordCount(qryFetchData) EQ 0>
             <cfquery name = "qryInsertData">
                 INSERT INTO addressBook(fullName, email, userName, profileImage)
@@ -284,15 +265,12 @@
                 );
             </cfquery>
         </cfif>
-
         <cfquery name = "qryFetchID">
             SELECT  userID
             FROM addressBook
             WHERE email = <cfqueryparam value = "#session.emailID#" cfsqltype = "cf_sql_varchar">;
         </cfquery>
-
         <cfset session.userID = qryFetchID.userID>
-
 	</cffunction>
     
     <cffunction name = "contactList" access = "public" returnType = "query">
@@ -301,7 +279,6 @@
             FROM contactDetails
             WHERE _createdBy = <cfqueryparam value = "#session.userID#" cfsqltype = "cf_sql_varchar">;
         </cfquery>
-
         <cfreturn qryContactList>
     </cffunction>
 
@@ -316,6 +293,5 @@
             startTime = "10:33 AM"
             interval = "daily" 
             resolveURL = "Yes">
-
     </cffunction>
 </cfcomponent>
