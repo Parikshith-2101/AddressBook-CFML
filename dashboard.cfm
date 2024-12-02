@@ -5,15 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Address Book</title>
-    <link rel="stylesheet" href="../bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
-<cfset local.contactList=application.objFunction.contactList()>
 <cfset local.exportPDF=application.objFunction.exportPDF()>
 <cfset local.exportExcel=application.objFunction.exportExcel()>
+<cfset application.objFunction.scheduleEnabler(session.userID)>
 
     <body>
         <nav class="navbar fixed-top p-0">
@@ -49,7 +49,11 @@
                 </div>
                 <div class="d-flex mt-4">
                     <div class="userProfile d-flex flex-column bg-white p-3 align-items-center rounded print-none">
-                        <img src="assets/userProfileImages/#session.profileImage#" alt="profile" class="rounded-circle" width="80" height="80">
+                        <cfif structKeyExists(session, "photo")>
+                            <img src="#session.photo#" alt="profile" class="rounded-circle" width="80" height="80">
+                        <cfelse>
+                            <img src="assets/userProfileImages/#session.profileImage#" alt="profile" class="rounded-circle" width="80" height="80">
+                        </cfif>
                         <p class="user-fullName text-uppercase my-3">#session.fullName#</p>
                         <button class="rounded-pill create-btn btn" onclick="createModal()">Create contact</button>
                     </div>
@@ -62,20 +66,24 @@
                             <div class="numberDiv title me-3">PHONE NUMBER</div>
                         </div>
 
-                        <cfif queryRecordCount(local.contactList) GT 0>
-                            <cfloop query="#local.contactList#">
+                        <cfset ormReload()>
+
+                        <cfset local.contactList = entityLoad("ormFunc", {_createdBy = session.userID})>
+
+                        <cfif local.contactList.len()>
+                            <cfloop array="#local.contactList#" item = "item">
                                 <div class="d-flex border-bottom py-3 align-items-center">
                                     <div class="profileImgDiv me-3">
-                                        <img src="assets/contactProfileImages/#profilephoto#" alt="profile"
+                                        <img src="assets/contactProfileImages/#item.getprofilephoto()#" alt="profile"
                                             width="66" height="60">
                                     </div>
-                                    <div class="nameDiv me-3">#local.contactList.firstName#</div>
-                                    <div class="emailDiv me-3">#local.contactList.email#</div>
-                                    <div class="numberDiv me-3">#local.contactList.mobile#</div>
+                                    <div class="nameDiv me-3">#item.getfirstName()#</div>
+                                    <div class="emailDiv me-3">#item.getemail()#</div>
+                                    <div class="numberDiv me-3">#item.getmobile()#</div>
                                     <div class="d-flex justify-content-around flex-grow-1">
-                                        <button class="rounded-pill login-btn px-4 btn" type="button" onclick="editContact('#local.contactList.contactID#')">EDIT</button>
-                                        <button class="rounded-pill login-btn px-4 btn" type="button" onclick="deleteContact('#local.contactList.contactID#')">DELETE</button>
-                                        <button class="rounded-pill login-btn px-4 btn" type="button" onclick="viewContact('#local.contactList.contactID#')">VIEW</button>
+                                        <button class="rounded-pill login-btn px-4 btn" type="button" onclick="editContact('#item.getcontactID()#')">EDIT</button>
+                                        <button class="rounded-pill login-btn px-4 btn" type="button" onclick="deleteContact('#item.getcontactID()#')">DELETE</button>
+                                        <button class="rounded-pill login-btn px-4 btn" type="button" onclick="viewContact('#item.getcontactID()#')">VIEW</button>
                                     </div>
                                 </div>
                             </cfloop>
@@ -143,11 +151,11 @@
                                 </div>
                                 <button class="rounded-pill w-25 mx-auto create-btn btn" data-bs-dismiss="modal">close</button>
                             </div>
-                            <div class="d-flex flex-column align-items-center mx-3">
+                            <div class="d-flex flex-column align-items-center">
                                 <button type="button" class="close w-25 mb-5 ms-auto btn" data-bs-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
-                                <img src="assets/designImages/profile.png" alt="profile" width="100" id="contactProfile">
+                                <img src="assets/designImages/profile.png" alt="profile" width="100" id="contactProfile" class=" mx-3">
                             </div>
                         </div>
                     </div>
@@ -341,9 +349,9 @@
             </cfdocument>
 
         </cfoutput>
+        <script src="bootstrap/js/bootstrap.min.js"></script>
+        <script src="jquery/jquery-3.7.1.min.js"></script>
         <script src="js/script.js"></script>
-        <script src="../bootstrap/js/bootstrap.min.js"></script>
-        <script src="../jquery/jquery-3.7.1.min.js"></script>
     </body>
 
 </html>
