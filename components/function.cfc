@@ -179,17 +179,17 @@
             FROM contactDetails
             WHERE contactID = <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">;
         </cfquery>
-        <cfif (qryFetchData.email NEQ arguments.email) OR (qryFetchData.mobile NEQ arguments.mobile)>
-            <cfquery name = "qryReferData">
-                SELECT firstName, lastName , email , mobile 
-                FROM contactDetails
-                WHERE email = <cfqueryparam value = "#arguments.email#" cfsqltype = "cf_sql_varchar">
-                OR mobile = <cfqueryparam value = "#arguments.mobile#" cfsqltype = "cf_sql_varchar">
-            </cfquery>
-            <cfif (queryRecordCount(qryReferData) NEQ 0) AND (trim(arguments.email) EQ trim(session.emailID))>
-                <cfset local.output['red'] = "Contact Already Exists">
-                <cfreturn local.output>
-            </cfif>
+        <cfquery name = "qryReferData">
+            SELECT firstName, lastName, profilephoto, email, mobile 
+            FROM contactDetails
+            WHERE (email = <cfqueryparam value = "#arguments.email#" cfsqltype = "cf_sql_varchar">
+            OR mobile = <cfqueryparam value = "#arguments.mobile#" cfsqltype = "cf_sql_varchar">)
+            AND contactID != <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">
+        </cfquery>
+        <cfif queryRecordCount(qryReferData) NEQ 0>
+            <cfset local.output['red'] = "Contact Already Exists">
+        <cfelseif trim(arguments.email) EQ trim(session.emailID)>
+            <cfset local.output['red'] = "Cannot Create Email Using Username">
         <cfelse>
             <cfif len(trim(arguments.profilePhoto))>
                 <cffile action = "upload" destination = "#expandPath("assets/contactProfileImages/")#" nameconflict = "MakeUnique">
@@ -216,9 +216,8 @@
                     profilephoto = <cfqueryparam value = "#local.getFilePath#" cfsqltype = "cf_sql_varchar">
                 WHERE contactID = <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">;
             </cfquery>
+            <cfset local.output['green'] = "Contact Added Successfully">
         </cfif>
-        <cflocation url = "dashboard.cfm" addToken = "No">
-        <cfset local.output['green'] = "Contact Added Successfully">
         <cfreturn local.output>
     </cffunction>
 
