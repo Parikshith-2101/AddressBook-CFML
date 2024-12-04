@@ -300,6 +300,9 @@
                     <div class="my-3 text-center">
                         <cfloop collection="#local.editResult#" item="item">
                             <div class="#item# fw-bold">#local.editResult[item]#</div>
+			    <cfif item EQ "green">
+                                <cflocation url = "dashboard.cfm" addToken = "No">
+                            </cfif>
                         </cfloop>
                     </div>
                 </div>

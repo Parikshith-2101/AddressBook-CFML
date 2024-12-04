@@ -8,13 +8,13 @@
     <cffunction name = "onRequest">
         <cfargument name = "requestPage">
         <cfif structKeyExists(session, "fullName") 
-            OR arguments.requestPage EQ "/signup.cfm" 
-            OR arguments.requestPage EQ "/googleSSO.cfm"
+            OR arguments.requestPage EQ "/Tasks/AddressBook-CFML/signup.cfm" 
+            OR arguments.requestPage EQ "/Tasks/AddressBook-CFML/googleSSO.cfm"
             OR cgi.HTTP_USER_AGENT EQ "CFSCHEDULE"
         >
             <cfinclude template = "#arguments.requestPage#">
         <cfelse> 
-            <cfinclude template = "/index.cfm">
+            <cfinclude template = "/Tasks/AddressBook-CFML/index.cfm">
         </cfif>
     </cffunction>
     
