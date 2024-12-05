@@ -1,7 +1,7 @@
 function logout(){
     if(confirm("Logout! Are you sure?")){
         $.ajax({
-            url: "components/function.cfc?method=logout",
+            url: "components/addressBook.cfc?method=logout",
             method: "POST",
             success: function(){
                 window.location.href = "index.cfm";
@@ -144,8 +144,17 @@ function contactValidation(){
         isValid = false;
     }
     else{
-        dob.parentElement.style.border = "unset";
-        dob.parentElement.style.background = "unset";
+        const currentDate = new Date();
+        const currentDateString = currentDate.toISOString().split('T')[0];
+        if(dob.value > currentDateString){
+            dob.parentElement.style.border = "1px solid #ff0000";
+            dob.parentElement.style.background = "#fdb1b1";
+            isValid = false;
+        }
+        else{
+            dob.parentElement.style.border = "unset";
+            dob.parentElement.style.background = "unset";
+        }
     }
 
     if(address.value === "" || address.value.length < 5){
@@ -234,7 +243,7 @@ function contactValidation(){
 
 function viewContact(contactID){
     $.ajax({
-        url: 'components/function.cfc?method=viewContact',
+        url: 'components/addressBook.cfc?method=viewContact',
         method: 'POST',
         data:{contactID : contactID},
         success: function(data) {
@@ -277,6 +286,7 @@ function createModal(){
     $("input[name='email']").first().val('');
     $("input[name='mobile']").first().val('');
     $("#editContactProfile").attr("src", "assets/designImages/profile.png"); 
+    $("#editContactID").hide();
     $("#editContactID").val("");
     $('#createModal').modal('show');
 }
@@ -287,7 +297,7 @@ function editContact(contactID){
     $("#editContactID").val(contactID);
     $("#editContactID").show();
     $.ajax({
-        url: 'components/function.cfc?method=viewContact',
+        url: 'components/addressBook.cfc?method=viewContact',
         method: 'POST',
         data:{contactID : contactID},
         success: function(data) {
@@ -326,7 +336,7 @@ function deleteContact(contactID){
     if(confirm("Delete! Are you sure?")){
         $.ajax({
             type: "POST",
-            url: "components/function.cfc?method=deleteContact",
+            url: "components/addressBook.cfc?method=deleteContact",
             data: {contactID : contactID},
             success: function() {
                 location.reload()
