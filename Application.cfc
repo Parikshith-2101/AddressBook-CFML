@@ -2,7 +2,7 @@
     <cfset this.name = "app">
     <cfset this.sessionManagement = "true">
     <cfset this.dataSource = "myDBMS">
-    <cfset application.objFunction = createObject("component", "components.addressBook")>
+    <cfset application.objAddressBook = createObject("component", "components.addressBook")>
     <cfset this.ormEnabled = "true">
 
     <cffunction name = "onRequest">

@@ -11,8 +11,8 @@
             integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
             crossorigin="anonymous" referrerpolicy="no-referrer" />
     </head>
-    <cfset contactReport = application.objFunction.contactList()>
-    <cfset application.objFunction.scheduleEnabler(session.userID)>
+    <cfset contactReport = application.objAddressBook.contactList()>
+    <cfset application.objAddressBook.scheduleEnabler(session.userID)>
     <body>
         <nav class="navbar fixed-top p-0">
             <a href="##" class="nav-link">
@@ -273,7 +273,7 @@
             </div>
 
             <cfif structKeyExists(form, "createContactButton" )>
-                <cfset createResult = application.objFunction.createContact(
+                <cfset createResult = application.objAddressBook.createContact(
                     title = form.title,
                     firstName = form.firstName,
                     lastName = form.lastName,
@@ -300,7 +300,7 @@
             </cfif>
 
             <cfif structKeyExists(form, "editContactButton" )>
-                <cfset editResult = application.objFunction.editContact(
+                <cfset editResult = application.objAddressBook.editContact(
                     title = form.title,
                     firstName = form.firstName,
                     lastName = form.lastName,

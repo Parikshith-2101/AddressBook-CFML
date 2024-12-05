@@ -58,7 +58,7 @@
                     <div>Don't have an account? <a href="signup.cfm" class="text-decoration-none">Register Here</a></div>
                     <cfoutput>
                         <cfif structKeyExists(form, "submit")>
-                            <cfset loginErrorMsg = application.objFunction.login(
+                            <cfset loginErrorMsg = application.objAddressBook.login(
                                 userName = form.userName,
                                 password = form.password
                             )>

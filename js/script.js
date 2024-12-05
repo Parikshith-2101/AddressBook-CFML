@@ -1,7 +1,7 @@
 function logout(){
     if(confirm("Logout! Are you sure?")){
         $.ajax({
-            url: "components/function.cfc?method=logout",
+            url: "components/addressBook.cfc?method=logout",
             method: "POST",
             success: function(){
                 window.location.href = "index.cfm";
@@ -243,7 +243,7 @@ function contactValidation(){
 
 function viewContact(contactID){
     $.ajax({
-        url: 'components/function.cfc?method=viewContact',
+        url: 'components/addressBook.cfc?method=viewContact',
         method: 'POST',
         data:{contactID : contactID},
         success: function(data) {
@@ -297,7 +297,7 @@ function editContact(contactID){
     $("#editContactID").val(contactID);
     $("#editContactID").show();
     $.ajax({
-        url: 'components/function.cfc?method=viewContact',
+        url: 'components/addressBook.cfc?method=viewContact',
         method: 'POST',
         data:{contactID : contactID},
         success: function(data) {
@@ -336,7 +336,7 @@ function deleteContact(contactID){
     if(confirm("Delete! Are you sure?")){
         $.ajax({
             type: "POST",
-            url: "components/function.cfc?method=deleteContact",
+            url: "components/addressBook.cfc?method=deleteContact",
             data: {contactID : contactID},
             success: function() {
                 location.reload()

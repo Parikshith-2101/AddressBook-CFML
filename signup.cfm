@@ -65,7 +65,7 @@
                 </form>
                 <div>Already have an account? <a href="index.cfm" class="text-decoration-none">Login Here</a></div>
                 <cfif structKeyExists(form, "submit")>
-                    <cfset signupErrorMsg = application.objFunction.signup(
+                    <cfset signupErrorMsg = application.objAddressBook.signup(
                         fullName = form.fullName,
                         email = form.email,
                         userName = form.userName,
