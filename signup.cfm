@@ -65,10 +65,16 @@
                 </form>
                 <div>Already have an account? <a href="index.cfm" class="text-decoration-none">Login Here</a></div>
                 <cfif structKeyExists(form, "submit")>
-                    <cfset local.result = application.objFunction.signup(form.fullName,form.email,form.userName,form.password,form.profileImage)>
-                    <cfloop collection = "#local.result#" item = "item">
+                    <cfset signupErrorMsg = application.objFunction.signup(
+                        fullName = form.fullName,
+                        email = form.email,
+                        userName = form.userName,
+                        password = form.password,
+                        profileImage = form.profileImage
+                    )>
+                    <cfloop collection = "#signupErrorMsg#" item = "item">
                         <cfoutput>
-                            <div class = "#item# mt-3 fw-bold">#local.result[item]#</div>
+                            <div class = "#item# mt-3 fw-bold">#signupErrorMsg[item]#</div>
                         </cfoutput>
                     </cfloop>
                 </cfif>

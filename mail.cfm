@@ -12,7 +12,7 @@
 
     <cfif local.getDay EQ day(now()) AND local.getMonth EQ month(now())>
         <cfmail  from = "#url.userEmail#"  subject = "Birthday Wishesh"  to = "#fetchContactData.email#">
-            Happy Birthday #now()#
+            Happy Birthday #fetchContactData.title# #fetchContactData.firstname#
         </cfmail>
     </cfif>
     

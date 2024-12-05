@@ -1,20 +1,18 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Address Book</title>
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
-        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-</head>
-<cfset local.exportPDF=application.objFunction.exportPDF()>
-<cfset local.exportExcel=application.objFunction.exportExcel()>
-<cfset application.objFunction.scheduleEnabler(session.userID)>
-
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Address Book</title>
+        <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+            integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+            crossorigin="anonymous" referrerpolicy="no-referrer" />
+    </head>
+    <cfset contactReport = application.objFunction.contactList()>
+    <cfset application.objFunction.scheduleEnabler(session.userID)>
     <body>
         <nav class="navbar fixed-top p-0">
             <a href="##" class="nav-link">
@@ -68,22 +66,22 @@
 
                         <cfset ormReload()>
 
-                        <cfset local.contactList = entityLoad("ormFunc", {_createdBy = session.userID})>
+                        <cfset contactListOrm = entityLoad("ormFunc", {_createdBy = session.userID})>
 
-                        <cfif local.contactList.len()>
-                            <cfloop array="#local.contactList#" item = "item">
+                        <cfif contactListOrm.len()>
+                            <cfloop array="#contactListOrm#" item = "OrmItem">
                                 <div class="d-flex border-bottom py-3 align-items-center">
                                     <div class="profileImgDiv me-3">
-                                        <img src="assets/contactProfileImages/#item.getprofilephoto()#" alt="profile"
+                                        <img src="assets/contactProfileImages/#OrmItem.getprofilephoto()#" alt="profile"
                                             width="66" height="60">
                                     </div>
-                                    <div class="nameDiv me-3">#item.getfirstName()#</div>
-                                    <div class="emailDiv me-3">#item.getemail()#</div>
-                                    <div class="numberDiv me-3">#item.getmobile()#</div>
+                                    <div class="nameDiv me-3">#OrmItem.getfirstName()#</div>
+                                    <div class="emailDiv me-3">#OrmItem.getemail()#</div>
+                                    <div class="numberDiv me-3">#OrmItem.getmobile()#</div>
                                     <div class="d-flex justify-content-around flex-grow-1">
-                                        <button class="rounded-pill login-btn px-4 btn" type="button" onclick="editContact('#item.getcontactID()#')">EDIT</button>
-                                        <button class="rounded-pill login-btn px-4 btn" type="button" onclick="deleteContact('#item.getcontactID()#')">DELETE</button>
-                                        <button class="rounded-pill login-btn px-4 btn" type="button" onclick="viewContact('#item.getcontactID()#')">VIEW</button>
+                                        <button class="rounded-pill login-btn px-4 btn" type="button" onclick="editContact('#OrmItem.getcontactID()#')">EDIT</button>
+                                        <button class="rounded-pill login-btn px-4 btn" type="button" onclick="deleteContact('#OrmItem.getcontactID()#')">DELETE</button>
+                                        <button class="rounded-pill login-btn px-4 btn" type="button" onclick="viewContact('#OrmItem.getcontactID()#')">VIEW</button>
                                     </div>
                                 </div>
                             </cfloop>
@@ -275,32 +273,55 @@
             </div>
 
             <cfif structKeyExists(form, "createContactButton" )>
-                <cfset local.createResult=application.objFunction.createContact(
-                    form.title,form.firstName,form.lastName,form.gender,form.dob,
-                    form.contactProfile,form.address,form.street,form.district,form.state,
-                    form.country,form.pincode,form.email,form.mobile 
+                <cfset createResult = application.objFunction.createContact(
+                    title = form.title,
+                    firstName = form.firstName,
+                    lastName = form.lastName,
+                    gender = form.gender,
+                    dob = form.dob,
+                    profilePhoto = form.contactProfile,
+                    address = form.address,
+                    street = form.street,
+                    district = form.district,
+                    state = form.state,
+                    country = form.country,
+                    pincode = form.pincode,
+                    email = form.email,
+                    mobile = form.mobile 
                 )>
 
                 <div class = "errorServerSide">
                     <div class="my-3 text-center">
-                        <cfloop collection="#local.createResult#" item="item">
-                            <div class="#item# fw-bold">#local.createResult[item]#</div>
+                        <cfloop collection="#createResult#" item="item">
+                            <div class="#item# fw-bold">#createResult[item]#</div>
                         </cfloop>
                     </div>
                 </div>
             </cfif>
 
             <cfif structKeyExists(form, "editContactButton" )>
-                <cfset local.editResult=application.objFunction.editContact(
-                    form.title,form.firstName,form.lastName,form.gender,form.dob,
-                    form.contactProfile,form.address,form.street,form.district,form.state,
-                    form.country,form.pincode,form.email,form.mobile,form.contactID 
-                    )>
+                <cfset editResult = application.objFunction.editContact(
+                    title = form.title,
+                    firstName = form.firstName,
+                    lastName = form.lastName,
+                    gender = form.gender,
+                    dob = form.dob,
+                    profilePhoto = form.contactProfile,
+                    address = form.address,
+                    street = form.street,
+                    district = form.district,
+                    state = form.state,
+                    country = form.country,
+                    pincode = form.pincode,
+                    email = form.email,
+                    mobile = form.mobile, 
+                    contactID = form.contactID 
+                )>
                 <div class = "errorServerSide">
                     <div class="my-3 text-center">
-                        <cfloop collection="#local.editResult#" item="item">
-                            <div class="#item# fw-bold">#local.editResult[item]#</div>
-			    <cfif item EQ "green">
+                        <cfloop collection="#editResult#" item="item">
+                            <div class="#item# fw-bold">#editResult[item]#</div>
+							<cfif item EQ "green">
                                 <cflocation url = "dashboard.cfm" addToken = "No">
                             </cfif>
                         </cfloop>
@@ -308,7 +329,7 @@
                 </div>
             </cfif>
 
-            <cfspreadsheet action = "write" query = "local.exportExcel" filename = "FileReports/addressBookReport.xlsx" sheetname = "AddressBook" overwrite = "true">
+            <cfspreadsheet action = "write" query = "contactReport" filename = "FileReports/addressBookReport.xlsx" sheetname = "AddressBook" overwrite = "true">
 
             <cfdocument format="pdf" filename="FileReports/addressBookReport.pdf" overwrite="true"
                 orientation="landscape">
@@ -330,22 +351,22 @@
                         <th>Email</th>
                         <th>Number</th>
                     </tr>
-                    <cfloop query="local.exportPDF">
+                    <cfloop query="contactReport">
                         <tr>
-                            <td><img src="assets/contactProfileImages/#local.exportPDF.profilephoto#" width="80"></td>
-                            <td>#local.exportPDF.title#</td>
-                            <td>#local.exportPDF.firstName#</td>
-                            <td>#local.exportPDF.lastName#</td>
-                            <td>#local.exportPDF.gender#</td>
-                            <td>#local.exportPDF.dateOfBirth#</td>
-                            <td>#local.exportPDF.street#</td>
-                            <td>#local.exportPDF.address#</td>
-                            <td>#local.exportPDF.district#</td>
-                            <td>#local.exportPDF.state#</td>
-                            <td>#local.exportPDF.country#</td>
-                            <td>#local.exportPDF.pincode#</td>
-                            <td>#local.exportPDF.email#</td>
-                            <td>#local.exportPDF.mobile#</td>
+                            <td><img src="assets/contactProfileImages/#contactReport.profilephoto#" width="80"></td>
+                            <td>#contactReport.title#</td>
+                            <td>#contactReport.firstName#</td>
+                            <td>#contactReport.lastName#</td>
+                            <td>#contactReport.gender#</td>
+                            <td>#contactReport.dateOfBirth#</td>
+                            <td>#contactReport.street#</td>
+                            <td>#contactReport.address#</td>
+                            <td>#contactReport.district#</td>
+                            <td>#contactReport.state#</td>
+                            <td>#contactReport.country#</td>
+                            <td>#contactReport.pincode#</td>
+                            <td>#contactReport.email#</td>
+                            <td>#contactReport.mobile#</td>
                         </tr>
                     </cfloop>
                 </table>

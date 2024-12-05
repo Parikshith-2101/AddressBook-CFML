@@ -144,8 +144,17 @@ function contactValidation(){
         isValid = false;
     }
     else{
-        dob.parentElement.style.border = "unset";
-        dob.parentElement.style.background = "unset";
+        const currentDate = new Date();
+        const currentDateString = currentDate.toISOString().split('T')[0];
+        if(dob.value > currentDateString){
+            dob.parentElement.style.border = "1px solid #ff0000";
+            dob.parentElement.style.background = "#fdb1b1";
+            isValid = false;
+        }
+        else{
+            dob.parentElement.style.border = "unset";
+            dob.parentElement.style.background = "unset";
+        }
     }
 
     if(address.value === "" || address.value.length < 5){
@@ -277,6 +286,7 @@ function createModal(){
     $("input[name='email']").first().val('');
     $("input[name='mobile']").first().val('');
     $("#editContactProfile").attr("src", "assets/designImages/profile.png"); 
+    $("#editContactID").hide();
     $("#editContactID").val("");
     $('#createModal').modal('show');
 }
