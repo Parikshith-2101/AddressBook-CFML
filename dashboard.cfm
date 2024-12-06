@@ -66,7 +66,7 @@
 
                         <cfset ormReload()>
 
-                        <cfset contactListOrm = entityLoad("ormFunc", {_createdBy = session.userID})>
+                        <cfset contactListOrm = entityLoad("ormFunc", {createdBy = session.userID})>
 
                         <cfif contactListOrm.len()>
                             <cfloop array="#contactListOrm#" item = "OrmItem">
