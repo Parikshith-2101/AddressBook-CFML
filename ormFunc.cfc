@@ -4,5 +4,5 @@
     <cfproperty name = "email">
     <cfproperty name = "mobile">
     <cfproperty name = "profilephoto">
-    <cfproperty name = "_createdBy">
+    <cfproperty name = "createdBy">
 </cfcomponent>
