@@ -146,6 +146,12 @@
                                         </div>
                                         <div class="w-50" id="contactNumber"></div>
                                     </div>
+                                    <div class="d-flex">
+                                        <div class="details-div d-flex w-50 title fw-bold">
+                                            Roles<span class="ms-auto me-25">:</span>
+                                        </div>
+                                        <div class="w-50" id="contactRole"></div>
+                                    </div>
                                 </div>
                                 <button class="rounded-pill w-25 mx-auto create-btn btn" data-bs-dismiss="modal">close</button>
                             </div>
@@ -204,9 +210,18 @@
                                             </div>
                                         </div>
                                         <div class="d-flex">
-                                            <div class="d-flex flex-column">
+                                            <div class="d-flex flex-column w-50 me-4">
                                                 <label for="contactProfile" class="text-nowrap my-2 label-title">Upload Photo</label>
                                                 <input type="file" name="contactProfile" accept="image/png, image/jpeg, image/webp">
+                                            </div>
+                                            <div class="d-flex flex-column w-50">
+                                                <label for="roleID" class="text-nowrap my-2 label-title">Choose a role:</label>
+                                                <select name ="roleID" id="roleID" multiple>
+                                                    <option value="101">role1</option>
+                                                    <option value="201">role2</option>
+                                                    <option value="301">role3</option>
+                                                    <option value="401">role4</option>
+                                                </select>    
                                             </div>
                                         </div>
                                         <div class="subTitle mt-3 mb-1">Contact Details</div>
@@ -287,7 +302,8 @@
                     country = form.country,
                     pincode = form.pincode,
                     email = form.email,
-                    mobile = form.mobile 
+                    mobile = form.mobile,
+                    roleID = form.roleID
                 )>
 
                 <div class = "errorServerSide">
@@ -315,7 +331,8 @@
                     pincode = form.pincode,
                     email = form.email,
                     mobile = form.mobile, 
-                    contactID = form.contactID 
+                    contactID = form.contactID,
+                    roleID = form.roleID 
                 )>
                 <div class = "errorServerSide">
                     <div class="my-3 text-center">

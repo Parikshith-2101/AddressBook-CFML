@@ -90,9 +90,12 @@
         <cfargument name = "pincode" type = "String">
         <cfargument name = "email" type = "String">
         <cfargument name = "mobile" type = "String">
+        <cfargument name = "roleID">
+
         <cfset local.output = structNew()>
         <cfquery name = "qryFetchData">
             SELECT 
+            contactID,
             firstName, 
             lastName, 
             email, 
@@ -149,6 +152,24 @@
                     <cfqueryparam value = "#session.userID#" cfsqltype = "cf_sql_varchar">
                 );
             </cfquery>
+            <cfquery name = qryContactID>
+                SELECT contactID
+                FROM contactDetails
+                WHERE email = <cfqueryparam value = "#arguments.email#" cfsqltype = "cf_sql_varchar">
+                    AND mobile = <cfqueryparam value = "#arguments.mobile#" cfsqltype = "cf_sql_varchar">;
+            </cfquery>
+            <cfloop list = "#arguments.roleID#" item="local.roleID">
+                <cfquery name = "qryInsertRole">
+                    INSERT INTO contactToRole(
+                        contactID,
+                        roleID
+                    )
+                    VALUES(
+                        <cfqueryparam value = "#qryContactID.contactID#" cfsqltype = "cf_sql_varchar">,
+                        <cfqueryparam value = "#local.roleID#" cfsqltype = "cf_sql_varchar">
+                    );
+                </cfquery>
+            </cfloop>
             <cflocation url = "dashboard.cfm" addToken = "No">
             <cfset local.output['green'] = "Contact Added Successfully">
         <cfelse>
@@ -179,7 +200,15 @@
             FROM contactDetails
             WHERE contactID = <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">;
         </cfquery>
+        <cfquery name = qryRoleName>   
+            SELECT roleName 
+                FROM roleDetails
+                JOIN contactToRole
+                ON roleDetails.roleID = contactToRole.roleID
+                WHERE contactID =  <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">;
+        </cfquery>
         <cfset local.queryStruct = queryGetRow(qryViewContact, 1)>
+        <cfset local.queryStruct['role'] = qryRoleName>
         <cfreturn local.queryStruct>
     </cffunction>
 
@@ -207,6 +236,7 @@
         <cfargument name = "email">
         <cfargument name = "mobile">
         <cfargument name = "contactID">
+        <cfargument name = "roleID">
         <cfset local.output = structNew()>
         <cfquery name = "qryFetchData">
             SELECT 
@@ -258,6 +288,7 @@
                     profilephoto = <cfqueryparam value = "#local.getFilePath#" cfsqltype = "cf_sql_varchar">
                 WHERE contactID = <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">;
             </cfquery>
+            
             <cfset local.output['green'] = "Contact Added Successfully">
         </cfif>
         <cfreturn local.output>
