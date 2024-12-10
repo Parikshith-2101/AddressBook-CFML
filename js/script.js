@@ -264,6 +264,7 @@ function viewContact(contactID){
             $("#contactEmail").text(myData.EMAIL);
             $("#contactNumber").text(myData.MOBILE);
             $("#contactProfile").attr("src", "assets/contactProfileImages/"+myData.PROFILEPHOTO);
+            $("#contactRole").text(myData.role.DATA);
             $('#viewModal').modal('show');
         }
     });
@@ -286,6 +287,7 @@ function createModal(){
     $("input[name='email']").first().val('');
     $("input[name='mobile']").first().val('');
     $("#editContactProfile").attr("src", "assets/designImages/profile.png"); 
+    $("#roleID").val('');
     $("#editContactID").hide();
     $("#editContactID").val("");
     $('#createModal').modal('show');
@@ -328,6 +330,7 @@ function editContact(contactID){
             $("input[name='email']").first().val(myData.EMAIL);
             $("input[name='mobile']").first().val(myData.MOBILE);
             $("#editContactProfile").attr("src", "assets/contactProfileImages/"+myData.PROFILEPHOTO);
+            $("#roleID").val(myData.role.DATA);
             $('#createModal'). modal('show');
         }
     });
