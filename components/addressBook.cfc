@@ -90,7 +90,7 @@
         <cfargument name = "pincode" type = "String">
         <cfargument name = "email" type = "String">
         <cfargument name = "mobile" type = "String">
-        <cfargument name = "roleID">
+        <cfargument name = "roleID" type = "string">
 
         <cfset local.output = structNew()>
         <cfquery name = "qryFetchData">
@@ -207,13 +207,25 @@
                 ON roleDetails.roleID = contactToRole.roleID
                 WHERE contactID =  <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">;
         </cfquery>
+        <cfquery name = qryRoleID>
+            SELECT roleDetails.roleID
+                FROM roleDetails
+                JOIN contactToRole
+                ON roleDetails.roleID = contactToRole.roleID
+                WHERE contactID =  <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">;
+        </cfquery>
         <cfset local.queryStruct = queryGetRow(qryViewContact, 1)>
         <cfset local.queryStruct['role'] = qryRoleName>
+        <cfset local.queryStruct['roleID'] = qryRoleID>
         <cfreturn local.queryStruct>
     </cffunction>
 
     <cffunction name = "deleteContact" access = "remote" returnType = "void">
         <cfargument name = "contactID">
+        <cfquery name = "qryDeleteContactID">
+            DELETE FROM contactToRole
+            WHERE contactID = <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">; 
+        </cfquery>
         <cfquery name = "qryDeleteContact">
             DELETE FROM contactDetails
             WHERE contactID = <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">;
@@ -256,7 +268,7 @@
             FROM contactDetails
             WHERE (email = <cfqueryparam value = "#arguments.email#" cfsqltype = "cf_sql_varchar">
             OR mobile = <cfqueryparam value = "#arguments.mobile#" cfsqltype = "cf_sql_varchar">)
-            AND contactID != <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">
+            AND contactID != <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">;
         </cfquery>
         <cfif queryRecordCount(qryReferData) NEQ 0>
             <cfset local.output['red'] = "Contact Already Exists">
@@ -289,6 +301,23 @@
                 WHERE contactID = <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">;
             </cfquery>
             
+            <cfquery name = qryDeleteContactID>
+                DELETE FROM contactToRole                
+                WHERE contactID = <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">;
+            </cfquery>
+            <cfloop list = "#arguments.roleID#" item="local.roleID">
+                <cfquery name = "qryInsertRole">
+                    INSERT INTO contactToRole(
+                        contactID,
+                        roleID
+                    )
+                    VALUES(
+                        <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">,
+                        <cfqueryparam value = "#local.roleID#" cfsqltype = "cf_sql_varchar">
+                    );
+                </cfquery>
+            </cfloop>
+
             <cfset local.output['green'] = "Contact Added Successfully">
         </cfif>
         <cfreturn local.output>
@@ -297,22 +326,31 @@
     <cffunction name = "contactList" access = "public" returnType = "query">
         <cfquery name = "qryContactDetails">
             SELECT 
-                title, 
-                firstName, 
-                lastName, 
-                gender, 
-                dateOfBirth, 
-                address, 
-                street, 
-                district, 
-                state, 
-                country, 
-                pincode, 
-                email, 
-                mobile, 
-                profilephoto
-            FROM contactDetails
-            WHERE createdBy = <cfqueryparam value = "#session.userID#" cfsqltype = "cf_sql_varchar">;
+                c.title, 
+                c.firstName, 
+                c.lastName, 
+                c.gender, 
+                c.dateOfBirth, 
+                c.address, 
+                c.street, 
+                c.district, 
+                c.state, 
+                c.country, 
+                c.pincode, 
+                c.email, 
+                c.mobile,
+                c.profilephoto,
+                STRING_AGG(r.roleName, ',') AS role
+            FROM 
+                contactDetails c
+                LEFT JOIN contactToRole ctr ON c.contactID = ctr.contactID
+                LEFT JOIN roleDetails r ON ctr.roleID = r.roleID
+            WHERE 
+                c.createdBy = <cfqueryparam value = "#session.userID#" cfsqltype = "cf_sql_varchar">
+            GROUP BY 
+                c.title, c.firstName, c.lastName, c.gender, 
+                c.dateOfBirth, c.address, c.street, c.district, c.state, 
+                c.country, c.pincode, c.email, c.mobile, c.profilephoto;
         </cfquery> 
         <cfset local.output = qryContactDetails>
         <cfreturn local.output>
