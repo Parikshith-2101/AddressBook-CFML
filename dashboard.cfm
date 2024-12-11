@@ -9,7 +9,7 @@
         <link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
             integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
-            crossorigin="anonymous" referrerpolicy="no-referrer" />
+            crossorigin="anonymous" referrerpolicy="no-referrer"/>
     </head>
     <cfset contactReport = application.objAddressBook.contactList()>
     <cfset application.objAddressBook.scheduleEnabler(session.userID)>
@@ -70,7 +70,7 @@
 
                         <cfif contactListOrm.len()>
                             <cfloop array="#contactListOrm#" item = "OrmItem">
-                                <div class="d-flex border-bottom py-3 align-items-center">
+                                <div class="d-flex border-bottom py-3 align-items-center" id = "#OrmItem.getcontactID()#">
                                     <div class="profileImgDiv me-3">
                                         <img src="assets/contactProfileImages/#OrmItem.getprofilephoto()#" alt="profile"
                                             width="66" height="60">
@@ -216,7 +216,7 @@
                                             </div>
                                             <div class="d-flex flex-column w-50">
                                                 <label for="roleID" class="text-nowrap my-2 label-title">Choose a role:</label>
-                                                <select name ="roleID" id="roleID" multiple>
+                                                <select name="roleID" id="roleID" multiple>
                                                     <option value="101">role1</option>
                                                     <option value="201">role2</option>
                                                     <option value="301">role3</option>
@@ -367,8 +367,9 @@
                         <th>Pincode</th>
                         <th>Email</th>
                         <th>Number</th>
+                        <th>Roles</th>
                     </tr>
-                    <cfloop query="contactReport">
+                    <cfloop query = "contactReport">
                         <tr>
                             <td><img src="assets/contactProfileImages/#contactReport.profilephoto#" width="80"></td>
                             <td>#contactReport.title#</td>
@@ -384,6 +385,7 @@
                             <td>#contactReport.pincode#</td>
                             <td>#contactReport.email#</td>
                             <td>#contactReport.mobile#</td>
+                            <td>#contactReport.role#</td>
                         </tr>
                     </cfloop>
                 </table>

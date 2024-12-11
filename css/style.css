@@ -110,9 +110,6 @@ select,input{
 .max-width-475{
     max-width: 475px;
 }
-.modal{
-    top: 40px !important;
-}
 .me-25{
     margin-right: 25%;
 }

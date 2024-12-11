@@ -273,6 +273,7 @@ function viewContact(contactID){
 function createModal(){
     $("#modal-heading").text("CREATE CONTACT");
     $("#submitButton").attr("name", "createContactButton");
+    $("#submitButton").text("CREATE");
     $("#title").val('');
     $("input[name='firstName']").first().val('');
     $("input[name='lastName']").first().val('');
@@ -296,6 +297,7 @@ function editContact(contactID){
     $("#myForm")[0].reset();
     $("#modal-heading").text("EDIT CONTACT");
     $("#submitButton").attr("name", "editContactButton");
+    $("#submitButton").text("Save Changes");
     $("#editContactID").val(contactID);
     $("#editContactID").show();
     $.ajax({
@@ -330,7 +332,7 @@ function editContact(contactID){
             $("input[name='email']").first().val(myData.EMAIL);
             $("input[name='mobile']").first().val(myData.MOBILE);
             $("#editContactProfile").attr("src", "assets/contactProfileImages/"+myData.PROFILEPHOTO);
-            $("#roleID").val(myData.role.DATA);
+            $("#roleID").val(myData.roleID.DATA);
             $('#createModal'). modal('show');
         }
     });
@@ -342,7 +344,7 @@ function deleteContact(contactID){
             url: "components/addressBook.cfc?method=deleteContact",
             data: {contactID : contactID},
             success: function() {
-                location.reload()
+                $('#' + contactID).remove();
             },
         });
     }         
