@@ -64,6 +64,66 @@
                             <div class="numberDiv title me-3">PHONE NUMBER</div>
                         </div>
 
+                        <cfif structKeyExists(form, "createContactButton" )>
+                            <cfset createResult = application.objAddressBook.createContact(
+                                title = form.title,
+                                firstName = form.firstName,
+                                lastName = form.lastName,
+                                gender = form.gender,
+                                dob = form.dob,
+                                profilePhoto = form.contactProfile,
+                                address = form.address,
+                                street = form.street,
+                                district = form.district,
+                                state = form.state,
+                                country = form.country,
+                                pincode = form.pincode,
+                                email = form.email,
+                                mobile = form.mobile,
+                                roleID = form.roleID
+                            )>
+
+                            <div class = "errorServerSide">
+                                <div class="my-3 text-center">
+                                    <cfloop collection="#createResult#" item="item">
+                                        <div class="#item# fw-bold">#createResult[item]#</div>
+                                    </cfloop>
+                                </div>
+                            </div>
+                        </cfif>
+
+                        <cfif structKeyExists(form, "editContactButton" )>
+                            <cfset editResult = application.objAddressBook.editContact(
+                                title = form.title,
+                                firstName = form.firstName,
+                                lastName = form.lastName,
+                                gender = form.gender,
+                                dob = form.dob,
+                                profilePhoto = form.contactProfile,
+                                address = form.address,
+                                street = form.street,
+                                district = form.district,
+                                state = form.state,
+                                country = form.country,
+                                pincode = form.pincode,
+                                email = form.email,
+                                mobile = form.mobile, 
+                                contactID = form.contactID,
+                                roleID = form.roleID 
+                            )>
+                            <div class = "errorServerSide">
+                                <div class="my-3 text-center">
+                                    <cfloop collection="#editResult#" item="item">
+                                        <div class="#item# fw-bold">#editResult[item]#</div>
+                                        <cfif item EQ "green">
+                                            <cflocation url = "dashboard.cfm" addToken = "No">
+                                        </cfif>
+                                    </cfloop>
+                                </div>
+                            </div>
+                        </cfif>
+
+
                         <cfset ormReload()>
 
                         <cfset contactListOrm = entityLoad("ormFunc", {createdBy = session.userID})>
@@ -287,64 +347,7 @@
                 </div>
             </div>
 
-            <cfif structKeyExists(form, "createContactButton" )>
-                <cfset createResult = application.objAddressBook.createContact(
-                    title = form.title,
-                    firstName = form.firstName,
-                    lastName = form.lastName,
-                    gender = form.gender,
-                    dob = form.dob,
-                    profilePhoto = form.contactProfile,
-                    address = form.address,
-                    street = form.street,
-                    district = form.district,
-                    state = form.state,
-                    country = form.country,
-                    pincode = form.pincode,
-                    email = form.email,
-                    mobile = form.mobile,
-                    roleID = form.roleID
-                )>
 
-                <div class = "errorServerSide">
-                    <div class="my-3 text-center">
-                        <cfloop collection="#createResult#" item="item">
-                            <div class="#item# fw-bold">#createResult[item]#</div>
-                        </cfloop>
-                    </div>
-                </div>
-            </cfif>
-
-            <cfif structKeyExists(form, "editContactButton" )>
-                <cfset editResult = application.objAddressBook.editContact(
-                    title = form.title,
-                    firstName = form.firstName,
-                    lastName = form.lastName,
-                    gender = form.gender,
-                    dob = form.dob,
-                    profilePhoto = form.contactProfile,
-                    address = form.address,
-                    street = form.street,
-                    district = form.district,
-                    state = form.state,
-                    country = form.country,
-                    pincode = form.pincode,
-                    email = form.email,
-                    mobile = form.mobile, 
-                    contactID = form.contactID,
-                    roleID = form.roleID 
-                )>
-                <div class = "errorServerSide">
-                    <div class="my-3 text-center">
-                        <cfloop collection="#editResult#" item="item">
-                            <div class="#item# fw-bold">#editResult[item]#</div>
-							<cfif item EQ "green">
-                                <cflocation url = "dashboard.cfm" addToken = "No">
-                            </cfif>
-                        </cfloop>
-                    </div>
-                </div>
-            </cfif>
 
             <cfspreadsheet action = "write" query = "contactReport" filename = "FileReports/addressBookReport.xlsx" sheetname = "AddressBook" overwrite = "true">
 

@@ -9,6 +9,7 @@ function logout(){
         });
     }
 }
+
 function loginValidation(){
     let userName = document.getElementsByName("userName")[0].value;
     let password = document.getElementsByName("password")[0].value;
@@ -30,6 +31,7 @@ function loginValidation(){
         event.preventDefault();
     }
 }
+
 function signupValidation(){
     let fullName = document.getElementById("fullName").value;
     let email = document.getElementById("email").value;
@@ -241,32 +243,30 @@ function contactValidation(){
     }
 }
 
-function viewContact(contactID){
+function viewContact(contactID) {
     $.ajax({
         url: 'components/addressBook.cfc?method=viewContact',
         method: 'POST',
-        data:{contactID : contactID},
+        data: { contactID: contactID },
         success: function(data) {
-            const myData = JSON.parse(data)
+            const myData = JSON.parse(data);
             console.log(myData);
-            $("#contactName").text(myData.TITLE+' '+myData.FIRSTNAME+' '+myData.LASTNAME);
-            $("#contactGender").text(myData.GENDER);
-
-            let DateOfBirth = myData.DATEOFBIRTH.replace(",", "");
+            $("#contactName").text(myData.title + ' ' + myData.firstName + ' ' + myData.lastName);
+            $("#contactGender").text(myData.gender);
+            let DateOfBirth = myData.dateOfBirth.replace(",", "");
             let dateOfBirth = new Date(DateOfBirth);
             let day = dateOfBirth.getDate();
-            let month = dateOfBirth.getMonth()+1;
+            let month = dateOfBirth.getMonth() + 1;
             let year = dateOfBirth.getFullYear();
-
-            $("#contactDOB").text(day+'-'+month+'-'+year);
-            $("#contactAdress").text(myData.STREET+', '+myData.ADDRESS+', '+myData.DISTRICT+', '+myData.STATE+', '+myData.COUNTRY);
-            $("#contactPincode").text(myData.PINCODE);
-            $("#contactEmail").text(myData.EMAIL);
-            $("#contactNumber").text(myData.MOBILE);
-            $("#contactProfile").attr("src", "assets/contactProfileImages/"+myData.PROFILEPHOTO);
-            $("#contactRole").text(myData.role.DATA);
+            $("#contactDOB").text(day + '-' + month + '-' + year);
+            $("#contactAdress").text(myData.street + ', ' + myData.address + ', ' + myData.district + ', ' + myData.state + ', ' + myData.country);
+            $("#contactPincode").text(myData.pincode);
+            $("#contactEmail").text(myData.email);
+            $("#contactNumber").text(myData.mobile);
+            $("#contactProfile").attr("src", "assets/contactProfileImages/" + myData.profilephoto);
+            $("#contactRole").text(myData.role);
             $('#viewModal').modal('show');
-        }
+        },
     });
 }
 
@@ -293,6 +293,7 @@ function createModal(){
     $("#editContactID").val("");
     $('#createModal').modal('show');
 }
+
 function editContact(contactID){
     $("#myForm")[0].reset();
     $("#modal-heading").text("EDIT CONTACT");
@@ -307,11 +308,11 @@ function editContact(contactID){
         success: function(data) {
             const myData = JSON.parse(data)
             console.log(myData);
-            $("#title").val(myData.TITLE);
-            $("input[name='firstName']").first().val(myData.FIRSTNAME);
-            $("input[name='lastName']").first().val(myData.LASTNAME);
-            $("#gender").val(myData.GENDER);
-            let DateOfBirth = myData.DATEOFBIRTH.replace(",", "");
+            $("#title").val(myData.title);
+            $("input[name='firstName']").first().val(myData.firstName);
+            $("input[name='lastName']").first().val(myData.lastName);
+            $("#gender").val(myData.gender);
+            let DateOfBirth = myData.dateOfBirth.replace(",", "");
             let dateOfBirth = new Date(DateOfBirth);
             let day = dateOfBirth.getDate();
             if(day < 10){
@@ -323,16 +324,17 @@ function editContact(contactID){
             }
             let year = dateOfBirth.getFullYear();
             $("input[name='dob']").first().val(year+'-'+month+'-'+day);
-            $("input[name='address']").first().val(myData.ADDRESS);
-            $("input[name='street']").first().val(myData.STREET);
-            $("input[name='district']").first().val(myData.DISTRICT);
-            $("input[name='state']").first().val(myData.STATE);
-            $("input[name='country']").first().val(myData.COUNTRY);
-            $("input[name='pincode']").first().val(myData.PINCODE);
-            $("input[name='email']").first().val(myData.EMAIL);
-            $("input[name='mobile']").first().val(myData.MOBILE);
-            $("#editContactProfile").attr("src", "assets/contactProfileImages/"+myData.PROFILEPHOTO);
-            $("#roleID").val(myData.roleID.DATA);
+            $("input[name='address']").first().val(myData.address);
+            $("input[name='street']").first().val(myData.street);
+            $("input[name='district']").first().val(myData.district);
+            $("input[name='state']").first().val(myData.state);
+            $("input[name='country']").first().val(myData.country);
+            $("input[name='pincode']").first().val(myData.pincode);
+            $("input[name='email']").first().val(myData.email);
+            $("input[name='mobile']").first().val(myData.mobile);
+            $("#editContactProfile").attr("src", "assets/contactProfileImages/"+myData.profilephoto);
+            var roleIDArr = myData.roleID.split(",");
+            $("#roleID").val(roleIDArr);
             $('#createModal'). modal('show');
         }
     });
