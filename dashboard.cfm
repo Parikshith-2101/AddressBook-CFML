@@ -53,7 +53,8 @@
                             <img src="assets/userProfileImages/#session.profileImage#" alt="profile" class="rounded-circle" width="80" height="80">
                         </cfif>
                         <p class="user-fullName text-uppercase my-3">#session.fullName#</p>
-                        <button class="rounded-pill create-btn btn" onclick="createModal()">Create contact</button>
+                        <button class="rounded-pill create-btn btn" onclick="createModal()">Create Contact</button>
+                        <button class="rounded-pill btn create-btn bg-success mt-2" onclick = "uploadModal()">Upload Contact</button>
                     </div>
 
                     <div class="dashboard bg-white ms-3 rounded px-2 flex-grow">
@@ -123,10 +124,9 @@
                             </div>
                         </cfif>
 
-
                         <cfset ormReload()>
 
-                        <cfset contactListOrm = entityLoad("ormFunc", {createdBy = session.userID})>
+                        <cfset contactListOrm = entityLoad("ormFunc", {createdBy=session.userID, active=true})>
 
                         <cfif contactListOrm.len()>
                             <cfloop array="#contactListOrm#" item = "OrmItem">
@@ -235,7 +235,7 @@
                                     <div class="heading p-3 text-center" id="modal-heading"></div>
                                 </div>
                                 <form method="post" class="p-5 py-2" enctype="multipart/form-data" id="myForm">
-                                    <div class="d-flex flex-column line-height-2">
+                                    <div class="d-flex flex-column">
                                         <div class="subTitle mt-3 mb-1">Personal Contact</div>
                                         <div class="d-flex justify-content-between my-3">
                                             <div class="d-flex flex-column w-25">
@@ -347,8 +347,6 @@
                 </div>
             </div>
 
-
-
             <cfspreadsheet action = "write" query = "contactReport" filename = "FileReports/addressBookReport.xlsx" sheetname = "AddressBook" overwrite = "true">
 
             <cfdocument format="pdf" filename="FileReports/addressBookReport.pdf" overwrite="true"
@@ -393,6 +391,36 @@
                     </cfloop>
                 </table>
             </cfdocument>
+
+            <!--Upload Modal-->
+
+            <div class="modal fade" id="uploadModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+                <div class="modal-dialog w-50">
+                    <div class="modal-content">
+                        <div class="d-flex p-4">
+                            <div class="contact-details bg-white d-flex flex-column flex-grow-1">
+                                <div class="py-3 pt-5">
+                                    <div class="subTitle mt-3 mb-1">Upload Excel File</div>
+                                </div>
+                                <div class="pb-4">
+                                    <label for="uploadExcel" class="label-title">Upload Excel*</label>
+                                    <input type="file" name="uploadExcel" id="uploadExcel" class="border-0">
+                                </div>
+                                <div class = "d-flex">
+                                    <button class="rounded-pill w-25 create-btn btn">SUBMIT</button>
+                                    <button class="rounded-pill login-btn btn ms-1" data-bs-dismiss="modal">CLOSE</button>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-column align-items-center">
+                                <div class = "d-flex w-100">
+                                    <button class="mx-auto btn btn-primary w-50 fs-8 text-nowrap">Template with data</button>
+                                    <button class="mx-auto btn btn-success w-50 fs-8 text-nowrap ms-2">Plain Template</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
         </cfoutput>
         <script src="bootstrap/js/bootstrap.min.js"></script>

@@ -5,4 +5,5 @@
     <cfproperty name = "mobile">
     <cfproperty name = "profilephoto">
     <cfproperty name = "createdBy">
+    <cfproperty name = "active">
 </cfcomponent>

@@ -101,13 +101,11 @@ function contactValidation(){
     let isValid = true;
 
     if(title.value === ""){
-        title.parentElement.style.border = "1px solid #ff0000";
-        title.parentElement.style.background = "#fdb1b1";
+        title.parentElement.style.cssText = "border: 1px solid #ff0000; background: #fdb1b1;";
         isValid = false;
     }
     else{
-        title.parentElement.style.border = "unset";
-        title.parentElement.style.background = "unset";
+        title.parentElement.style.cssText = "border: unset; background: unset;";
     }
 
     if(firstName.value === "" || firstName.value.length < 3){
@@ -357,4 +355,12 @@ function printFunction(){
     $(".login-btn").hide();
     $(".navbar").hide();
     window.print();
+}
+
+$(document).on("click", function(){
+    $(".errorServerSide").hide();
+});
+
+function uploadModal() {
+    $('#uploadModal').modal('show');
 }
