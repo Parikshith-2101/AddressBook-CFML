@@ -71,7 +71,7 @@
             </div>
         </div>
         <cfif structKeyExists(form, "googleSignin")>
-            <cflocation  url="googleSSO.cfm">
+            <cflocation url = "googleSSO.cfm">
         </cfif>
 
     </div>

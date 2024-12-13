@@ -12,8 +12,10 @@
                 fullName, 
                 profileImage, 
                 email
-            FROM addressBook
-            WHERE userName = <cfqueryparam value = "#arguments.userName#" cfsqltype = "cf_sql_varchar">
+            FROM 
+                addressBook
+            WHERE 
+                userName = <cfqueryparam value = "#arguments.userName#" cfsqltype = "cf_sql_varchar">
                 AND password =  <cfqueryparam value = "#local.encrypted_pass#" cfsqltype = "cf_sql_varchar">;
         </cfquery>
         <cfif local.qryFetchData.RecordCount>
@@ -41,8 +43,10 @@
             SELECT 
                 userName,
                 password
-            FROM addressBook
-            WHERE userName = <cfqueryparam value = "#arguments.userName#" cfsqltype = "cf_sql_varchar">;
+            FROM 
+                addressBook
+            WHERE 
+                userName = <cfqueryparam value = "#arguments.userName#" cfsqltype = "cf_sql_varchar">;
         </cfquery>
         <cfif local.qryFetchData.RecordCount EQ 0>
             <cffile action = "upload" destination = "#expandPath("assets/userProfileImages/")#" nameconflict = "MakeUnique">
@@ -95,16 +99,18 @@
         <cfset local.output = structNew()>
         <cfquery name = "local.qryFetchData">
             SELECT 
-            contactID,
-            firstName, 
-            lastName, 
-            email, 
-            mobile, 
-            createdBy
-            FROM contactDetails
-            WHERE (email = <cfqueryparam value="#arguments.email#" cfsqltype="cf_sql_varchar">
-                OR mobile = <cfqueryparam value="#arguments.mobile#" cfsqltype="cf_sql_varchar">)
-            AND createdBy = <cfqueryparam value="#session.userID#" cfsqltype="cf_sql_varchar">;
+                contactID,
+                firstName, 
+                lastName, 
+                email, 
+                mobile, 
+                createdBy
+            FROM 
+                contactDetails
+            WHERE 
+                email = <cfqueryparam value = "#arguments.email#" cfsqltype="cf_sql_varchar">
+                AND createdBy = <cfqueryparam value = "#session.userID#" cfsqltype="cf_sql_varchar">
+                AND active = <cfqueryparam value = "true" cfsqltype="cf_sql_bit">;
         </cfquery>
         <cfif (trim(arguments.email) EQ trim(session.emailID))>
             <cfset local.output['red'] = "You Cannot Create Email Using Username">
@@ -134,7 +140,8 @@
                     email,
                     mobile, 
                     createdBy,
-                    updatedBy
+                    updatedBy,
+                    active
                 )
                 VALUES(
                     <cfqueryparam value = "#arguments.title#" cfsqltype = "cf_sql_varchar">,
@@ -152,7 +159,8 @@
                     <cfqueryparam value = "#arguments.email#" cfsqltype = "cf_sql_varchar">,
                     <cfqueryparam value = "#arguments.mobile#" cfsqltype = "cf_sql_varchar">,
                     <cfqueryparam value = "#session.userID#" cfsqltype = "cf_sql_varchar">,
-                    <cfqueryparam value = "#session.userID#" cfsqltype = "cf_sql_varchar">
+                    <cfqueryparam value = "#session.userID#" cfsqltype = "cf_sql_varchar">,
+                    <cfqueryparam value = "true" cfsqltype="cf_sql_bit">
                 );
             </cfquery>
             <cfloop list = "#arguments.roleID#" item = "local.roleID">
@@ -209,7 +217,11 @@
             WHERE contactID = <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">; 
         </cfquery>
         <cfquery name = "local.qryDeleteContact">
-            DELETE FROM contactDetails
+            UPDATE contactDetails
+            SET 
+                active = <cfqueryparam value = "false" cfsqltype="cf_sql_bit">,
+                deletedBy = <cfqueryparam value = "#session.userID#" cfsqltype = "cf_sql_varchar">,
+                deletedOn = <cfqueryparam value = "#now()#" cfsqltype = "cf_sql_timestamp">
             WHERE contactID = <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">;
         </cfquery>
     </cffunction>
@@ -233,10 +245,13 @@
         <cfargument name = "roleID" required="true">
        
         <cfset local.output = structNew()>
-        <cfquery name = "local.qryFetchData">
-            SELECT profilephoto
-            FROM contactDetails
-            WHERE contactID = <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">
+        <cfquery name = "local.qryFetchPhoto">
+            SELECT 
+                profilephoto
+            FROM 
+                contactDetails
+            WHERE 
+                contactID = <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">
         </cfquery>
         <cfquery name = "local.qryReferData">
             SELECT 
@@ -245,17 +260,19 @@
                 profilephoto, 
                 email, 
                 mobile
-            FROM contactDetails
-            WHERE (email = <cfqueryparam value = "#arguments.email#" cfsqltype = "cf_sql_varchar"> 
-            OR mobile = <cfqueryparam value = "#arguments.mobile#" cfsqltype = "cf_sql_varchar">)
-            AND contactID != <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">
+            FROM 
+                contactDetails
+            WHERE 
+                email = <cfqueryparam value = "#arguments.email#" cfsqltype = "cf_sql_varchar"> 
+                AND contactID != <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">,
+                AND active = <cfqueryparam value = "true" cfsqltype="cf_sql_bit">;
         </cfquery>
         <cfif local.qryReferData.RecordCount EQ 0>  
             <cfif len(trim(arguments.profilePhoto))>
                 <cffile action = "upload" destination = "#expandPath('assets/contactProfileImages/')#" nameconflict="MakeUnique">
                 <cfset local.getFilePath = cffile['SERVERFILE']>
             <cfelse>
-                <cfset local.getFilePath = local.qryFetchData.profilephoto>
+                <cfset local.getFilePath = local.qryFetchPhoto.profilephoto>
             </cfif>
             <cfquery name = "local.qryEditContact">
                 UPDATE contactDetails
@@ -273,7 +290,8 @@
                     pincode = <cfqueryparam value = "#arguments.pincode#" cfsqltype = "cf_sql_varchar">,
                     email = <cfqueryparam value = "#arguments.email#" cfsqltype = "cf_sql_varchar">,
                     mobile = <cfqueryparam value = "#arguments.mobile#" cfsqltype = "cf_sql_varchar">,
-                    profilephoto = <cfqueryparam value = "#local.getFilePath#" cfsqltype = "cf_sql_varchar">
+                    profilephoto = <cfqueryparam value = "#local.getFilePath#" cfsqltype = "cf_sql_varchar">,
+                    updatedOn = <cfqueryparam value = "#now()#" cfsqltype = "cf_sql_timestamp">
                 WHERE contactID = <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">;
             </cfquery>
             <cfquery name = local.qryDeleteContactID>
@@ -328,6 +346,7 @@
                 LEFT JOIN roleDetails r ON ctr.roleID = r.roleID
             WHERE 
                 c.createdBy = <cfqueryparam value = "#session.userID#" cfsqltype = "cf_sql_varchar">
+                AND c.active = <cfqueryparam value = "true" cfsqltype="cf_sql_bit">
             GROUP BY 
                 c.title, 
                 c.firstName, 
@@ -355,10 +374,13 @@
         <cfset session.emailID = arguments.structSSO.other.email>
         <cfset session.photo = arguments.structSSO.other.picture>
         <cfquery name = "local.qryFetchData">
-            SELECT email
-            FROM addressBook
-            WHERE email = <cfqueryparam value = "#session.emailID#" cfsqltype = "cf_sql_varchar">
-            AND password IS NULL;
+            SELECT 
+                email
+            FROM 
+                addressBook
+            WHERE 
+                email = <cfqueryparam value = "#session.emailID#" cfsqltype = "cf_sql_varchar">
+                AND password IS NULL;
         </cfquery>
         <cfif local.qryFetchData.RecordCount EQ 0>
             <cfquery name = "local.qryInsertData">
@@ -377,9 +399,12 @@
             </cfquery>
         </cfif>
         <cfquery name = "local.qryFetchID">
-            SELECT userID
-            FROM addressBook
-            WHERE email = <cfqueryparam value = "#session.emailID#" cfsqltype = "cf_sql_varchar">;
+            SELECT 
+                userID
+            FROM 
+                addressBook
+            WHERE 
+                email = <cfqueryparam value = "#session.emailID#" cfsqltype = "cf_sql_varchar">;
         </cfquery>
         <cfset session.userID = local.qryFetchID.userID>
 	</cffunction>

@@ -159,3 +159,7 @@ label.label-title {
 table, tr , th{
     border-collapse: collapse;
 }
+.fs-8{
+    font-size: 12px;
+    font-weight: 500;
+}
