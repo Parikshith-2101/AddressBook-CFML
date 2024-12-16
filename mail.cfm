@@ -1,4 +1,4 @@
-<cfparam name ="url.userID" default = "">
+<cfparam name = "url.userID" default = "">
 <cfparam name = "url.userEmail" default = "abc@gmail.com">
 <cfquery name = "fetchContactData">
     SELECT title, firstName, lastName, dateOfBirth, email

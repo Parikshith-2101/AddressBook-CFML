@@ -12,7 +12,9 @@
             crossorigin="anonymous" referrerpolicy="no-referrer"/>
     </head>
     <cfset contactReport = application.objAddressBook.contactList()>
-    <cfset application.objAddressBook.scheduleEnabler(session.userID)>
+    <cfset application.objAddressBook.scheduleEnabler(
+        userID = session.userID
+    )>
     <body>
         <nav class="navbar fixed-top p-0">
             <a href="##" class="nav-link">
@@ -234,7 +236,7 @@
                                 <div class="p-5 pb-2">
                                     <div class="heading p-3 text-center" id="modal-heading"></div>
                                 </div>
-                                <form method="post" class="p-5 py-2" enctype="multipart/form-data" id="myForm">
+                                <form method="post" class="p-5 py-2" enctype="multipart/form-data" id="contactForm">
                                     <div class="d-flex flex-column">
                                         <div class="subTitle mt-3 mb-1">Personal Contact</div>
                                         <div class="d-flex justify-content-between my-3">
@@ -397,31 +399,33 @@
             <div class="modal fade" id="uploadModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
                 <div class="modal-dialog w-50">
                     <div class="modal-content">
-                        <div class="d-flex p-4">
+                        <form method="post" enctype="multipart/form-data" name="uploadExcelForm" class="d-flex p-4">
                             <div class="contact-details bg-white d-flex flex-column flex-grow-1">
                                 <div class="py-3 pt-5">
                                     <div class="subTitle mt-3 mb-1">Upload Excel File</div>
                                 </div>
                                 <div class="pb-4">
                                     <label for="uploadExcel" class="label-title">Upload Excel*</label>
-                                    <input type="file" name="uploadExcel" id="uploadExcel" class="border-0">
+                                    <input type="file" name="uploadExcel" id="uploadExcel" class="border-0" accept=".xlsx">
                                 </div>
                                 <div class = "d-flex">
-                                    <button class="rounded-pill w-25 create-btn btn">SUBMIT</button>
-                                    <button class="rounded-pill login-btn btn ms-1" data-bs-dismiss="modal">CLOSE</button>
+                                    <input type="button" name="submitExcel" class="rounded-pill w-25 create-btn btn" onclick="uploadExcelSheet()">
+                                    <button type = "button" class="rounded-pill login-btn btn ms-2" data-bs-dismiss="modal">CLOSE</button>
                                 </div>
                             </div>
                             <div class="d-flex flex-column align-items-center">
                                 <div class = "d-flex w-100">
-                                    <button class="mx-auto btn btn-primary w-50 fs-8 text-nowrap">Template with data</button>
-                                    <button class="mx-auto btn btn-success w-50 fs-8 text-nowrap ms-2">Plain Template</button>
+                                    <!---<a href="FileReports/addressBookReport.xlsx" download = "ReportSheet" class="mx-auto btn btn-primary w-50 fs-8 text-nowrap">
+                                        Template with data
+                                    </a>--->
+                                    <button type="button" onclick="exportExcelData()" class="mx-auto btn btn-primary w-50 fs-8 text-nowrap">Template with data</button>
+                                    <button type="button" onclick="exportExcelPlain()" class="mx-auto btn btn-success w-50 fs-8 text-nowrap ms-2">Plain Template</button>
                                 </div>
                             </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
-
         </cfoutput>
         <script src="bootstrap/js/bootstrap.min.js"></script>
         <script src="jquery/jquery-3.7.1.min.js"></script>
