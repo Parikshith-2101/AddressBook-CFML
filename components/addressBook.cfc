@@ -212,17 +212,21 @@
 
     <cffunction name = "deleteContact" access = "remote" returnType = "void">
         <cfargument name = "contactID">
-        <cfquery name = "local.qryDeleteContactID">
-            DELETE FROM contactToRole
-            WHERE contactID = <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">; 
-        </cfquery>
+<!---         <cfquery name = "local.qryDeleteContactID">
+            DELETE 
+                FROM contactToRole
+            WHERE   
+                contactID = <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">; 
+        </cfquery> --->
         <cfquery name = "local.qryDeleteContact">
-            UPDATE contactDetails
+            UPDATE 
+                contactDetails
             SET 
                 active = <cfqueryparam value = "false" cfsqltype="cf_sql_bit">,
                 deletedBy = <cfqueryparam value = "#session.userID#" cfsqltype = "cf_sql_varchar">,
                 deletedOn = <cfqueryparam value = "#now()#" cfsqltype = "cf_sql_timestamp">
-            WHERE contactID = <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">;
+            WHERE 
+                contactID = <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">;
         </cfquery>
     </cffunction>
 
@@ -275,7 +279,8 @@
                 <cfset local.getFilePath = local.qryFetchPhoto.profilephoto>
             </cfif>
             <cfquery name = "local.qryEditContact">
-                UPDATE contactDetails
+                UPDATE 
+                    contactDetails
                 SET 
                     title = <cfqueryparam value = "#arguments.title#" cfsqltype = "cf_sql_varchar">, 
                     firstName = <cfqueryparam value = "#arguments.firstName#" cfsqltype = "cf_sql_varchar">,
@@ -292,7 +297,8 @@
                     mobile = <cfqueryparam value = "#arguments.mobile#" cfsqltype = "cf_sql_varchar">,
                     profilephoto = <cfqueryparam value = "#local.getFilePath#" cfsqltype = "cf_sql_varchar">,
                     updatedOn = <cfqueryparam value = "#now()#" cfsqltype = "cf_sql_timestamp">
-                WHERE contactID = <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">;
+                WHERE 
+                    contactID = <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">;
             </cfquery>
             <cfquery name = local.qryDeleteContactID>
                 DELETE FROM contactToRole                
@@ -420,5 +426,13 @@
             startTime = "10:33 AM"
             interval = "daily" 
             resolveURL = "Yes">
+    </cffunction>
+
+    <cffunction name = "uploadExcel">
+        <cfargument name = "uploadedExcel">
+        <cffile action = "upload" destination = "#expandPath('/uploadedExcel')#" nameconflict="overwrite">
+        <cfset local.filePath = expandPath('/uploadedExcel') & "/" & cffile.serverFile>
+        <cfspreadsheet action = "read" src = "#local.filePath#" query = "addquery">
+        <cfdump var = "#addquery#">
     </cffunction>
 </cfcomponent>

@@ -293,7 +293,7 @@ function createModal(){
 }
 
 function editContact(contactID){
-    $("#myForm")[0].reset();
+    $("#contactForm")[0].reset();
     $("#modal-heading").text("EDIT CONTACT");
     $("#submitButton").attr("name", "editContactButton");
     $("#submitButton").text("Save Changes");
@@ -363,4 +363,22 @@ $(document).on("click", function(){
 
 function uploadModal() {
     $('#uploadModal').modal('show');
+}
+
+function uploadExcelSheet(){
+    let uploadedFileData = $("#uploadExcel")[0].files[0];
+    let uploadedFile = new FormData();
+    uploadedFile.append("file", uploadedFileData);
+    console.log(uploadedFile)
+
+    $.ajax({
+        type: "POST",
+        url: "components/addressBook.cfc?method=uploadExcel",
+        data: {uploadedExcel : uploadedFile},
+        success: function() {
+            alert();
+        },
+    });
+
+    event.preventDefault();
 }

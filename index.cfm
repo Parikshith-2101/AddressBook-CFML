@@ -73,7 +73,6 @@
         <cfif structKeyExists(form, "googleSignin")>
             <cflocation url = "googleSSO.cfm">
         </cfif>
-
     </div>
 
 	<script src="jquery/jquery-3.7.1.min.js"></script>
