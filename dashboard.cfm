@@ -36,10 +36,10 @@
             <div class="container d-flex flex-column overflow-hidden">
                 <div class="bg-white d-flex rounded print-none">
                     <div class="d-flex p-3 ms-auto w-15 justify-content-around">
-                        <a href="FileReports/addressBookReport.pdf" download = "ReportPDF">
+                        <a href="FileReports/addressBookReport.pdf" onclick = "window.location.reload()" download = "ReportPDF #DateTimeFormat(now())#">
                             <img src="assets/designImages/pdf.png" alt="pdf" width="30">
                         </a>
-                        <a href="FileReports/addressBookReport.xlsx" download = "ReportSheet">
+                        <a href="FileReports/addressBookReport.xlsx" onclick = "window.location.reload()" download = "ReportSheet #DateTimeFormat(now())#">
                             <img src="assets/designImages/excel.png" alt="excel" width="30">
                         </a>
                         <a href="" onclick="printFunction()">
@@ -409,7 +409,7 @@
                                     <input type="file" name="uploadExcel" id="uploadExcel" class="border-0" accept=".xlsx">
                                 </div>
                                 <div class = "d-flex">
-                                    <input type="button" name="submitExcel" class="rounded-pill w-25 create-btn btn" onclick="uploadExcelSheet()">
+                                    <input type="submit" name="submitExcel" class="rounded-pill w-25 create-btn btn" onclick="uploadExcelSheet(event)">
                                     <button type = "button" class="rounded-pill login-btn btn ms-2" data-bs-dismiss="modal">CLOSE</button>
                                 </div>
                             </div>
@@ -418,8 +418,8 @@
                                     <!---<a href="FileReports/addressBookReport.xlsx" download = "ReportSheet" class="mx-auto btn btn-primary w-50 fs-8 text-nowrap">
                                         Template with data
                                     </a>--->
-                                    <button type="button" onclick="exportExcelData()" class="mx-auto btn btn-primary w-50 fs-8 text-nowrap">Template with data</button>
-                                    <button type="button" onclick="exportExcelPlain()" class="mx-auto btn btn-success w-50 fs-8 text-nowrap ms-2">Plain Template</button>
+                                    <button type="button" onclick="exportExcel('TemplatewithData')" class="mx-auto btn btn-primary w-50 fs-8 text-nowrap">Template with data</button>
+                                    <button type="button" onclick="exportExcel('plainTemplate')" class="mx-auto btn btn-success w-50 fs-8 text-nowrap ms-2">Plain Template</button>
                                 </div>
                             </div>
                         </form>
@@ -430,6 +430,7 @@
         <script src="bootstrap/js/bootstrap.min.js"></script>
         <script src="jquery/jquery-3.7.1.min.js"></script>
         <script src="js/script.js"></script>
+        <cfdump var = "#session.addquery#">
     </body>
 
 </html>

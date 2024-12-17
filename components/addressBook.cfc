@@ -212,12 +212,6 @@
 
     <cffunction name = "deleteContact" access = "remote" returnType = "void">
         <cfargument name = "contactID">
-<!---         <cfquery name = "local.qryDeleteContactID">
-            DELETE 
-                FROM contactToRole
-            WHERE   
-                contactID = <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">; 
-        </cfquery> --->
         <cfquery name = "local.qryDeleteContact">
             UPDATE 
                 contactDetails
@@ -327,8 +321,12 @@
 
 
     <cffunction name = "contactList" returnFormat = "JSON" access = "remote" returnType = "query">
+        <cfargument name = "excelTemplateCheck" default = "1">
         <cfquery name = "local.qryContactDetails">
             SELECT 
+                <cfif arguments.excelTemplateCheck EQ "plainTemplate">
+                    TOP 0
+                </cfif>
                 c.title, 
                 c.firstName, 
                 c.lastName, 
@@ -428,11 +426,20 @@
             resolveURL = "Yes">
     </cffunction>
 
-    <cffunction name = "uploadExcel">
+    <cffunction name = "uploadExcel" access = "remote">
         <cfargument name = "uploadedExcel">
         <cffile action = "upload" destination = "#expandPath('/uploadedExcel')#" nameconflict="overwrite">
         <cfset local.filePath = expandPath('/uploadedExcel') & "/" & cffile.serverFile>
-        <cfspreadsheet action = "read" src = "#local.filePath#" query = "addquery">
-        <cfdump var = "#addquery#">
+        <cfspreadsheet action = "read" src = "#local.filePath#" query = "session.addquery" HeaderRow = "1" excludeHeaderRow = "True">
+        <cfset queryDeleteColumn(session.addquery, "profilephoto")>
+        <cfdump var = "#session.addquery#">
+    </cffunction>
+
+    <cffunction name = "downloadExcel" access = "remote">
+        <cfargument name = "excelType" default = "1">
+        <cfset local.contactList = contactList(arguments.excelType)>
+        <cfset queryDeleteColumn(local.contactList, "profilephoto")>
+        <cfset queryDeleteColumn(local.contactList, "roleID")>
+        <cfspreadsheet action = "write" query = "local.contactList" filename = "../excelTemplates/#arguments.excelType#.xlsx" sheetname = "AddressBook" overwrite = "true">
     </cffunction>
 </cfcomponent>
