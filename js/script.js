@@ -365,20 +365,37 @@ function uploadModal() {
     $('#uploadModal').modal('show');
 }
 
-function uploadExcelSheet(){
+function uploadExcelSheet(event){
     let uploadedFileData = $("#uploadExcel")[0].files[0];
     let uploadedFile = new FormData();
     uploadedFile.append("file", uploadedFileData);
     console.log(uploadedFile)
 
+    event.preventDefault();
     $.ajax({
         type: "POST",
         url: "components/addressBook.cfc?method=uploadExcel",
-        data: {uploadedExcel : uploadedFile},
+        data: uploadedFile, 
+        processData: false, 
+        contentType: false,
         success: function() {
             alert();
         },
     });
+    
+}
 
-    event.preventDefault();
+function exportExcel(excelType){
+    $.ajax({
+        type: "POST",
+        url: "components/addressBook.cfc?method=downloadExcel",
+        data: { excelType : excelType},
+        success: function(){
+            let a = document.createElement("a");
+            a.href = "excelTemplates/"+excelType+".xlsx";
+            a.download = excelType;
+            a.click();
+            a.remove();
+        }
+    });
 }
