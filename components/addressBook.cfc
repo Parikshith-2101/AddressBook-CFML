@@ -175,7 +175,7 @@
                     );
                 </cfquery>
             </cfloop>
-            <cfset local.output['green'] = "Contact Added Successfully">
+            <cfset local.output['green'] = "Contact Created Successfully">
         </cfif>
         <cfreturn local.output>
     </cffunction>
@@ -262,7 +262,7 @@
                 contactDetails
             WHERE 
                 email = <cfqueryparam value = "#arguments.email#" cfsqltype = "cf_sql_varchar"> 
-                AND contactID != <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">,
+                AND contactID != <cfqueryparam value = "#arguments.contactID#" cfsqltype = "cf_sql_varchar">
                 AND active = <cfqueryparam value = "true" cfsqltype="cf_sql_bit">;
         </cfquery>
         <cfif local.qryReferData.RecordCount EQ 0>  
@@ -425,21 +425,98 @@
             interval = "daily" 
             resolveURL = "Yes">
     </cffunction>
-
+    
     <cffunction name = "uploadExcel" access = "remote">
         <cfargument name = "uploadedExcel">
-        <cffile action = "upload" destination = "#expandPath('/uploadedExcel')#" nameconflict="overwrite">
-        <cfset local.filePath = expandPath('/uploadedExcel') & "/" & cffile.serverFile>
-        <cfspreadsheet action = "read" src = "#local.filePath#" query = "session.addquery" HeaderRow = "1" excludeHeaderRow = "True">
-        <cfset queryDeleteColumn(session.addquery, "profilephoto")>
-        <cfdump var = "#session.addquery#">
+        <cffile action = "upload" destination = "#expandPath('../uploadedExcel')#" nameconflict = "overwrite">
+        <cfset local.filePath = expandPath('../uploadedExcel') & "/" & cffile.serverFile>
+        <cfspreadsheet action = "read" src = "#local.filePath#" query = "local.qryExcelData" HeaderRow = "1" excludeHeaderRow = "True">
+        <cfif queryKeyExists(local.qryExcelData, "profilephoto")>
+            <cfset queryDeleteColumn(local.qryExcelData, "profilephoto")>
+        </cfif>
+        <cfset local.missingElementArray = []>
+        <cfset session.addquery = local.qryExcelData>
+        <cfloop query = "local.qryExcelData">
+            <cfset local.missingElementRow = []>
+            <cfloop list = "#columnList#" item = "item">
+                <cfif local.qryExcelData[item].toString() EQ "">
+                    <cfset arrayAppend(local.missingElementRow, item)>
+                </cfif>
+            </cfloop>
+            <cfset local.missingElementList = arrayToList(local.missingElementRow)>
+            <cfif arrayIsEmpty(local.missingElementRow)>
+                <cfset local.ResultMsg = "">
+                <cfquery name = "local.qryReferData">
+                    SELECT 
+                        contactID 
+                    FROM 
+                        contactDetails
+                    WHERE 
+                        createdBy = <cfqueryparam value = "#session.userID#" cfsqltype = "cf_sql_varchar">
+                        AND email = <cfqueryparam value = "#local.qryExcelData.email#" cfsqltype = "cf_sql_varchar">
+                        AND active = <cfqueryparam value = "true" cfsqltype="cf_sql_bit">;
+                </cfquery>
+                <cfset local.dateOfBirth = local.qryExcelData.dateofbirth>
+                <cfif local.qryReferData.recordCount GT 0>
+                    <cfset local.updateResult = editContact(
+                        title = local.qryExcelData.title,
+                        firstName = local.qryExcelData.firstName,
+                        lastName = local.qryExcelData.lastName,
+                        gender = local.qryExcelData.gender,
+                        dob = local.qryExcelData.dateofbirth,
+                        profilePhoto = "",
+                        address = local.qryExcelData.address,
+                        street = local.qryExcelData.street,
+                        district = local.qryExcelData.district,
+                        state = local.qryExcelData.state,
+                        country = local.qryExcelData.country,
+                        pincode = local.qryExcelData.pincode,
+                        email = local.qryExcelData.email,
+                        mobile = local.qryExcelData.mobile, 
+                        contactID = local.qryExcelData.contactID,
+                        roleID = local.qryExcelData.role 
+                    )>
+                    <cfloop collection = "#local.updateResult#" item = "item">
+                        <cfset local.ResultMsg = local.updateResult[item]>
+                    </cfloop>
+                    <cfset local.ResultMsg = "updated">
+                <cfelse>
+                    <cfset local.createResult = createContact(
+                        title = local.qryExcelData.title,
+                        firstName = local.qryExcelData.firstName,
+                        lastName = local.qryExcelData.lastName,
+                        gender = local.qryExcelData.gender,
+                        dob = local.qryExcelData.dateofbirth,
+                        profilePhoto = "",
+                        address = local.qryExcelData.address,
+                        street = local.qryExcelData.street,
+                        district = local.qryExcelData.district,
+                        state = local.qryExcelData.state,
+                        country = local.qryExcelData.country,
+                        pincode = local.qryExcelData.pincode,
+                        email = local.qryExcelData.email,
+                        mobile = local.qryExcelData.mobile, 
+                        roleID = local.qryExcelData.role
+                    )>
+                    <cfloop collection = "#local.createResult#" item = "item">
+                        <cfset local.ResultMsg = local.createResult[item]>
+                    </cfloop>
+                </cfif>
+                <cfset arrayAppend(local.missingElementArray, local.ResultMsg)>
+            <cfelse>
+                <cfset arrayAppend(local.missingElementArray, local.missingElementList & " missing")>
+            </cfif>
+        </cfloop>
+
+        <cfset queryAddColumn(local.qryExcelData, "RESULT", local.missingElementArray)>
+        <cfdump var = "#local.qryExcelData#">
+        <cfspreadsheet action = "write" query = "local.qryExcelData" filename = "excelTemplates/test.xlsx" sheetname = "AddressBook" overwrite = "true">
     </cffunction>
 
     <cffunction name = "downloadExcel" access = "remote">
         <cfargument name = "excelType" default = "1">
         <cfset local.contactList = contactList(arguments.excelType)>
         <cfset queryDeleteColumn(local.contactList, "profilephoto")>
-        <cfset queryDeleteColumn(local.contactList, "roleID")>
         <cfspreadsheet action = "write" query = "local.contactList" filename = "../excelTemplates/#arguments.excelType#.xlsx" sheetname = "AddressBook" overwrite = "true">
     </cffunction>
 </cfcomponent>
