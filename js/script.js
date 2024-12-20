@@ -98,6 +98,7 @@ function contactValidation(){
     let pincode = document.getElementsByName("pincode")[0];
     let email = document.getElementsByName("email")[0];
     let number = document.getElementsByName("mobile")[0];
+    let role = document.getElementById("roleID");
     let isValid = true;
 
     if(title.value === ""){
@@ -157,7 +158,7 @@ function contactValidation(){
         }
     }
 
-    if(address.value === "" || address.value.length < 5){
+    if(address.value === ""){
         address.parentElement.style.border = "1px solid #ff0000";
         address.parentElement.style.background = "#fdb1b1";
         isValid = false;
@@ -167,7 +168,7 @@ function contactValidation(){
         address.parentElement.style.background = "unset";
     }
 
-    if(street.value === "" || street.value.length < 5){
+    if(street.value === ""){
         street.parentElement.style.border = "1px solid #ff0000";
         street.parentElement.style.background = "#fdb1b1";
         isValid = false;
@@ -177,7 +178,7 @@ function contactValidation(){
         street.parentElement.style.background = "unset";
     }
 
-    if(district.value === "" || district.value.length < 5){
+    if(district.value === ""){
         district.parentElement.style.border = "1px solid #ff0000";
         district.parentElement.style.background = "#fdb1b1";
         isValid = false;
@@ -187,7 +188,7 @@ function contactValidation(){
         district.parentElement.style.background = "unset";
     }
 
-    if(state.value === "" || state.value.length < 5){
+    if(state.value === ""){
         state.parentElement.style.border = "1px solid #ff0000";
         state.parentElement.style.background = "#fdb1b1";
         isValid = false;
@@ -197,7 +198,7 @@ function contactValidation(){
         state.parentElement.style.background = "unset";
     }
 
-    if(country.value === "" || country.value.length < 5){
+    if(country.value === ""){
         country.parentElement.style.border = "1px solid #ff0000";
         country.parentElement.style.background = "#fdb1b1";
         isValid = false;
@@ -233,6 +234,16 @@ function contactValidation(){
         number.parentElement.style.border = "unset";
         number.parentElement.style.background = "unset";
     }
+    if(role.value === ""){
+        role.parentElement.style.border = "1px solid #ff0000";
+        role.parentElement.style.background = "#fdb1b1";
+        isValid = false;
+    }
+    else{
+        role.parentElement.style.border = "unset";
+        role.parentElement.style.background = "unset";
+    }
+    
     if(!isValid){
         event.preventDefault();
     }
@@ -368,7 +379,7 @@ function uploadModal() {
 function uploadExcelSheet(event){
     let uploadedFileData = $("#uploadExcel")[0].files[0];
     let uploadedFile = new FormData();
-    uploadedFile.append("file", uploadedFileData);
+    uploadedFile.append("uploadedExcel", uploadedFileData);
     console.log(uploadedFile)
 
     event.preventDefault();
@@ -379,7 +390,7 @@ function uploadExcelSheet(event){
         processData: false, 
         contentType: false,
         success: function() {
-            alert();
+            $("#downloadExcel").removeClass("d-none");
         },
     });
     

@@ -403,7 +403,10 @@
                                 </div>
                                 <div class="pb-4">
                                     <label for="uploadExcel" class="label-title">Upload Excel*</label>
-                                    <input type="file" name="uploadExcel" id="uploadExcel" class="border-0" accept=".xlsx">
+                                    <div class="d-flex align-items-center">
+                                        <input type="file" name="uploadExcel" id="uploadExcel" class="border-0" accept=".xlsx">                                        
+                                        <a href="excelTemplates/ExcelSheetData.xlsx" download="ExcelSheetData" class="d-none px-2 btn btn-success" onclick="window.location.reload()" id="downloadExcel">Download</a>
+                                    </div>
                                 </div>
                                 <div class = "d-flex">
                                     <input type="submit" name="submitExcel" class="rounded-pill w-25 create-btn btn" onclick="uploadExcelSheet(event)">
@@ -424,28 +427,6 @@
         <script src="bootstrap/js/bootstrap.min.js"></script>
         <script src="jquery/jquery-3.7.1.min.js"></script>
         <script src="js/script.js"></script>
-        <!--- <cfset local.missingElementArray = []>
-        <cfset local.qryExcelData = duplicate(session.addquery)>
-        <cfloop query = "local.qryExcelData">
-            <cfset local.missingElementRow = []>
-            <cfloop list = "#columnList#" item = "item">
-                <cfif local.qryExcelData[item].toString() EQ "">
-                    <cfset arrayAppend(local.missingElementRow, item)>
-                </cfif>
-            </cfloop>
-            <cfset local.missingElementList = arrayToList(local.missingElementRow)>
-            <cfif arrayIsEmpty(local.missingElementRow)>
-                <cfset local.ResultMsg = "">
-
-                <cfset arrayAppend(local.missingElementArray, local.ResultMsg)>
-            <cfelse>
-                <cfset arrayAppend(local.missingElementArray, local.missingElementList & " missing")>
-            </cfif>
-        </cfloop>
-
-        <cfset queryAddColumn(local.qryExcelData, "RESULT", local.missingElementArray)> --->
         <cfdump var = "#session.addquery#">
-<!---         <cfspreadsheet action = "write" query = "local.qryExcelData" filename = "excelTemplates/test.xlsx" sheetname = "AddressBook" overwrite = "true"> --->
     </body>
-
 </html>
