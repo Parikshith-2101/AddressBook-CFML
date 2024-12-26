@@ -435,25 +435,64 @@
         <cfif queryKeyExists(local.qryExcelData, "profilephoto")>
             <cfset queryDeleteColumn(local.qryExcelData, "profilephoto")>
         </cfif>
+        <cfif queryKeyExists(local.qryExcelData, "RESULT")>
+            <cfset queryDeleteColumn(local.qryExcelData, "RESULT")>
+        </cfif>
+        <cfif queryKeyExists(local.qryExcelData, "roleID")>
+            <cfset queryDeleteColumn(local.qryExcelData, "roleID")>
+        </cfif>
         <cfset local.missingElementArray = []>
-        <cfset session.addquery = local.qryExcelData>
         <cfloop query = "local.qryExcelData">
             <cfset local.missingElementRow = []>
+
+            <cfset local.formatedMobile = replace(local.qryExcelData.mobile, ",", "", "all")>
+            <cfset local.formatedPincode = replace(local.qryExcelData.pincode, ",", "", "all")>
+
+            <cfif NOT isValid("email", local.qryExcelData.email)>
+                <cfset arrayAppend(local.missingElementRow, "[Invalid email format]")>
+            </cfif>
+
+            <cfif NOT isDate(local.qryExcelData.dateofbirth)>
+                <cfset arrayAppend(local.missingElementRow, "[Invalid date of birth format]")>
+ 
+                <cfset local.dob = createDateTime(local.qryExcelData.dateofbirth)>
+                <cfif local.dob GT now()>
+                    <cfset arrayAppend(local.missingElementRow, "[Date of birth cannot be in the future]")>
+                </cfif>
+            </cfif>
+
+            <cfif local.qryExcelData.title NEQ "Mr." AND local.qryExcelData.title NEQ "Mrs.">
+                <cfset arrayAppend(local.missingElementRow, "[Invalid title(Must be Mr. or Mrs.)]")>
+            </cfif>
+
+            <cfif NOT isNumeric(local.formatedMobile) OR LEN(local.formatedMobile) NEQ 10>
+                <cfset arrayAppend(local.missingElementRow, "[Invalid mobile number(should be numeric and 10 digits)]")>
+            </cfif>
+
+            <cfif NOT isNumeric(local.formatedPincode) OR LEN(local.formatedPincode) NEQ 6>
+                <cfset arrayAppend(local.missingElementRow, "[Invalid pincode(should be numeric and 6 digits)]")>
+            </cfif>
+
+            <cfif local.qryExcelData.gender NEQ "Male" AND local.qryExcelData.gender NEQ "Female">
+                <cfset arrayAppend(local.missingElementRow, "[Invalid gender(Must be Male or Female)]")>
+            </cfif>
+   
             <cfloop list = "#columnList#" item = "item">
                 <cfif local.qryExcelData[item].toString() EQ "">
                     <cfset arrayAppend(local.missingElementRow, item)>
                 </cfif>
             </cfloop>
             <cfset local.missingElementList = arrayToList(local.missingElementRow)>
+            <cfset session.addquery = local.qryExcelData>
+        
             <cfif arrayIsEmpty(local.missingElementRow)>
                 <cfset local.ResultMsg = "">
-                <cfset local.formatedMobile = replace(local.qryExcelData.mobile, ",", "", "all")>
-                <cfset local.formatedPincode = replace(local.qryExcelData.pincode, ",", "", "all")>
+
                 <cfset local.roleArr = []>
                 <cfloop list = "#local.qryExcelData.role#" item = "roleName">
                     <cfquery name = "local.qryFetchRoleID">
                         SELECT 
-                            roleID , roleName
+                            roleID ,roleName
                         FROM
                             roleDetails
                         WHERE
@@ -472,7 +511,8 @@
                         createdBy = <cfqueryparam value = "#session.userID#" cfsqltype = "cf_sql_varchar">
                         AND email = <cfqueryparam value = "#local.qryExcelData.email#" cfsqltype = "cf_sql_varchar">
                         AND active = <cfqueryparam value = "true" cfsqltype = "cf_sql_bit">;
-                </cfquery>
+                </cfquery> 
+        
                 <cfif local.qryReferData.recordCount EQ 0>
                     <cfset local.createResult = createContact(
                         title = local.qryExcelData.title,
@@ -519,19 +559,31 @@
                     <cfloop collection = "#local.updateResult#" item = "item">
                         <cfset local.ResultMsg = local.updateResult[item]>
                     </cfloop> 
-                    <cfset session.resultMsg = local.ResultMsg>  
                     <cfif local.ResultMsg EQ "Contact Updated Successfully">
-                        <cfset local.ResultMsg = "updated">
+                        <cfset local.ResultMsg = "Updated">
                     </cfif>              
                 </cfif>
                 <cfset arrayAppend(local.missingElementArray, local.ResultMsg)>
             <cfelse>
-                <cfset arrayAppend(local.missingElementArray, local.missingElementList & " missing")>
+                <cfset arrayAppend(local.missingElementArray,local.missingElementList & " missing")>
             </cfif>
         </cfloop>
         <cfset queryAddColumn(local.qryExcelData, "RESULT", local.missingElementArray)>
-        <cfdump var = "#local.qryExcelData#">
+        <cfset querySort(local.qryExcelData, sortFunction)>
         <cfspreadsheet action = "write" query = "local.qryExcelData" filename = "../excelTemplates/ExcelSheetData.xlsx" sheetname = "AddressBook" overwrite = "true">
+    </cffunction>
+
+    <cffunction name = "sortFunction">
+        <cfargument name = "rowSet1">
+        <cfargument name = "rowSet2">
+        <cfset local.excelResultValues = {"Updated" : 1 , "Added" : 2}>
+        <cfif NOT structKeyExists(local.excelResultValues, arguments.rowSet1.RESULT)>   
+            <cfset local.excelResultValues[arguments.rowSet1.RESULT] = 0 >
+        </cfif>
+        <cfif NOT structKeyExists(local.excelResultValues, arguments.rowSet2.RESULT)>   
+            <cfset local.excelResultValues[arguments.rowSet2.RESULT] = 0 >
+        </cfif>
+        <cfreturn compare(local.excelResultValues[arguments.rowSet1.RESULT], local.excelResultValues[arguments.rowSet2.RESULT])>
     </cffunction>
 
     <cffunction name = "downloadExcel" access = "remote">

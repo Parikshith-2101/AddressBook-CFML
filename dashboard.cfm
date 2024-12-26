@@ -407,6 +407,9 @@
                                         <input type="file" name="uploadExcel" id="uploadExcel" class="border-0" accept=".xlsx">                                        
                                         <a href="excelTemplates/ExcelSheetData.xlsx" download="ExcelSheetData" class="d-none px-2 btn btn-success" onclick="window.location.reload()" id="downloadExcel">Download</a>
                                     </div>
+                                    <div id = "uploadExcelError" class = "text-danger fw-bold d-none">
+                                        Invalid Input. Please upload Excel file!
+                                    </div>
                                 </div>
                                 <div class = "d-flex">
                                     <input type="submit" name="submitExcel" class="rounded-pill w-25 create-btn btn" onclick="uploadExcelSheet(event)">
@@ -427,6 +430,6 @@
         <script src="bootstrap/js/bootstrap.min.js"></script>
         <script src="jquery/jquery-3.7.1.min.js"></script>
         <script src="js/script.js"></script>
-        <cfdump var = "#session.addquery#">
+<!---         <cfdump var="#session.addquery#"> --->
     </body>
 </html>
