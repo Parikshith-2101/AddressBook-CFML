@@ -381,19 +381,25 @@ function uploadExcelSheet(event){
     let uploadedFile = new FormData();
     uploadedFile.append("uploadedExcel", uploadedFileData);
     console.log(uploadedFile)
-
+    let fileName = $("#uploadExcel").val();
+    let ext = fileName.substring(fileName.lastIndexOf('.') + 1);
+    if(ext == "XLSX" || ext == "xlsx") {
+        $("#uploadExcelError").addClass("d-none");
+        $.ajax({
+            type: "POST",
+            url: "components/addressBook.cfc?method=uploadExcel",
+            data: uploadedFile, 
+            processData: false, 
+            contentType: false,
+            success: function() {
+                $("#downloadExcel").removeClass("d-none");
+            },
+        });
+    } else {
+        alert("Upload xlsx files only");
+        $("#uploadExcelError").removeClass("d-none");
+    }
     event.preventDefault();
-    $.ajax({
-        type: "POST",
-        url: "components/addressBook.cfc?method=uploadExcel",
-        data: uploadedFile, 
-        processData: false, 
-        contentType: false,
-        success: function() {
-            $("#downloadExcel").removeClass("d-none");
-        },
-    });
-    
 }
 
 function exportExcel(excelType){
