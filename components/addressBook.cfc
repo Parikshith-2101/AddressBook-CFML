@@ -438,8 +438,11 @@
         <cfif queryKeyExists(local.qryExcelData, "RESULT")>
             <cfset queryDeleteColumn(local.qryExcelData, "RESULT")>
         </cfif>
-        <cfif queryKeyExists(local.qryExcelData, "roleID")>
-            <cfset queryDeleteColumn(local.qryExcelData, "roleID")>
+        <cfif queryKeyExists(local.qryExcelData, "ROLEID")>
+            <cfset queryDeleteColumn(local.qryExcelData, "ROLEID")>
+        </cfif>
+        <cfif queryKeyExists(local.qryExcelData, "CONTACTID")>
+            <cfset queryDeleteColumn(local.qryExcelData, "CONTACTID")>
         </cfif>
         <cfset local.missingElementArray = []>
         <cfloop query = "local.qryExcelData">
@@ -454,9 +457,9 @@
 
             <cfif NOT isDate(local.qryExcelData.dateofbirth)>
                 <cfset arrayAppend(local.missingElementRow, "[Invalid date of birth format]")>
- 
+            <cfelse>
                 <cfset local.dob = createDateTime(local.qryExcelData.dateofbirth)>
-                <cfif local.dob GT now()>
+                <cfif dateCompare(local.dob, now()) GT 0>
                     <cfset arrayAppend(local.missingElementRow, "[Date of birth cannot be in the future]")>
                 </cfif>
             </cfif>
@@ -487,21 +490,23 @@
         
             <cfif arrayIsEmpty(local.missingElementRow)>
                 <cfset local.ResultMsg = "">
-
+                <cfset local.roleStruct = {}>
+                <cfquery name = "local.qryFetchRoles" >
+                    SELECT 
+                        roleID, roleName
+                    FROM
+                        roleDetails
+                    WHERE
+                        roleName IN (<cfqueryparam value = "#local.qryExcelData.role#" cfsqltype = "cf_sql_varchar" list = "yes">)
+                </cfquery>
+                <cfloop query = "local.qryFetchRoles">
+                    <cfset local.roleStruct[local.qryFetchRoles.roleName] = local.qryFetchRoles.roleID>
+                </cfloop>
                 <cfset local.roleArr = []>
                 <cfloop list = "#local.qryExcelData.role#" item = "roleName">
-                    <cfquery name = "local.qryFetchRoleID">
-                        SELECT 
-                            roleID ,roleName
-                        FROM
-                            roleDetails
-                        WHERE
-                            roleName = <cfqueryparam value = "#roleName#" cfsqltype = "cf_sql_varchar">;
-                    </cfquery>
-                    <cfset arrayAppend(local.roleArr, local.qryFetchRoleID.roleID)>
+                    <cfset arrayAppend(local.roleArr, local.roleStruct[roleName])>
                 </cfloop>
                 <cfset local.roleIDFromRoleName = arrayToList(local.roleArr)>
-
                 <cfquery name = "local.qryReferData">
                     SELECT 
                         contactID 

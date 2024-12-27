@@ -431,5 +431,7 @@
         <script src="jquery/jquery-3.7.1.min.js"></script>
         <script src="js/script.js"></script>
 <!---         <cfdump var="#session.addquery#"> --->
+        <cfdump var="#session.dob#">
+        <cfdump var="#session.datecomp#">
     </body>
 </html>
